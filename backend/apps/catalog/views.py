@@ -1,0 +1,43 @@
+from rest_framework import generics, filters
+from rest_framework.permissions import AllowAny
+from django_filters.rest_framework import DjangoFilterBackend
+from .models import Category, Product
+from .serializers import CategorySerializer, ProductListSerializer, ProductDetailSerializer
+
+
+class CategoryListView(generics.ListAPIView):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [AllowAny]
+
+
+class ProductListView(generics.ListAPIView):
+    serializer_class = ProductListSerializer
+    permission_classes = [AllowAny]
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]
+    search_fields = ["name", "description"]
+    ordering_fields = ["price", "created_at"]
+    ordering = ["-created_at"]
+
+    def get_queryset(self):
+        qs = Product.objects.filter(is_active=True).select_related("category").prefetch_related("images")
+        category_slug = self.request.query_params.get("category")
+        min_price = self.request.query_params.get("min_price")
+        max_price = self.request.query_params.get("max_price")
+
+        if category_slug:
+            qs = qs.filter(category__slug=category_slug)
+        if min_price:
+            qs = qs.filter(price__gte=min_price)
+        if max_price:
+            qs = qs.filter(price__lte=max_price)
+        return qs
+
+
+class ProductDetailView(generics.RetrieveAPIView):
+    serializer_class = ProductDetailSerializer
+    permission_classes = [AllowAny]
+    lookup_field = "slug"
+    queryset = Product.objects.filter(is_active=True).select_related("category").prefetch_related(
+        "images", "variants", "related_from__related_product"
+    )
