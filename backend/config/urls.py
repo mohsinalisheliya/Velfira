@@ -10,6 +10,11 @@ urlpatterns = [
     path("api/", include("apps.cart.urls")),
     path("api/", include("apps.coupons.urls")),
     path("api/", include("apps.orders.urls")),
+    path("api/", include("apps.payments.urls")),
+    path("api/", include("apps.invoices.urls")),
+    path("api/", include("apps.analytics.urls")),
+    path("api/", include("apps.banners.urls")),
+    path("api/", include("apps.logs.urls")),
 ]
 
 if settings.DEBUG:

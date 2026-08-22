@@ -120,3 +120,30 @@ CORS_ALLOWED_ORIGINS = os.getenv(
 
 OTP_EXPIRY_MINUTES = 10
 OTP_MAX_ATTEMPTS = 5
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "db": {
+            "level": "WARNING",
+            "class": "apps.logs.handlers.DatabaseLogHandler",
+        },
+        "console": {
+            "level": "DEBUG",
+            "class": "logging.StreamHandler",
+        },
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console", "db"],
+            "level": "WARNING",
+            "propagate": False,
+        },
+        "apps": {
+            "handlers": ["console", "db"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
