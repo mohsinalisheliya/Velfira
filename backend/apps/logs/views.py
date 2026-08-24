@@ -4,7 +4,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from .models import SystemLog
 from .serializers import SystemLogSerializer
 
-
+#-------------------[System Log List View]-------------------#
 class SystemLogListView(generics.ListAPIView):
     serializer_class = SystemLogSerializer
     permission_classes = [IsAdminUser]
