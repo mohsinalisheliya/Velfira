@@ -7,7 +7,7 @@ from django.utils.crypto import get_random_string
 from .models import *
 from .otp import send_otp, verify_otp
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSerializer
-
+from django.contrib.auth import authenticate
 
 class SendOTPView(APIView):
     permission_classes = []  # public endpoint
@@ -48,4 +48,35 @@ class VerifyOTPView(APIView):
             "refresh": str(refresh),
             "user": CustomerSerializer(user).data,
             "created": created,
+        })
+
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
+
+
+class AdminLoginView(APIView):
+    permission_classes = []
+
+    def post(self, request):
+        username = request.data.get("username")
+        password = request.data.get("password")
+
+        user = authenticate(request, username=username, password=password)
+        if not user:
+            return Response(
+                {"detail": "Invalid credentials."},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        if not user.is_staff:
+            return Response(
+                {"detail": "Admin access only."},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        refresh = RefreshToken.for_user(user)
+        return Response({
+            "access": str(refresh.access_token),
+            "refresh": str(refresh),
+            "username": user.username,
+            "is_staff": user.is_staff,
         })

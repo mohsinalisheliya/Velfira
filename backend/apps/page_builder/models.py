@@ -1,11 +1,11 @@
 from django.db import models
-
+#-------------[page Layout]----------------
 class PageLayout(models.Model):
     STATUS_CHOICES = [('draft', 'Draft'), ('published', 'Published')]
     page_key = models.CharField(max_length=50, unique=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='draft')
     updated_at = models.DateTimeField(auto_now=True)
-
+#-------------[page Block]----------------
 class PageBlock(models.Model):
     layout = models.ForeignKey(PageLayout, on_delete=models.CASCADE, related_name='blocks')
     block_type = models.CharField(max_length=50)
@@ -16,3 +16,4 @@ class PageBlock(models.Model):
     class Meta:
         ordering = ['sort_order']
         indexes = [models.Index(fields=['layout', 'sort_order'])]
+    
