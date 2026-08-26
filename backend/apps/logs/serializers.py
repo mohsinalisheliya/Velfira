@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import SystemLog
 
-
+#------------------[ Serializer for SystemLog Model ]------------------#
 class SystemLogSerializer(serializers.ModelSerializer):
     order_id = serializers.IntegerField(source="order.id", read_only=True, allow_null=True)
     user_mobile = serializers.CharField(source="user.mobile_number", read_only=True, allow_null=True)
