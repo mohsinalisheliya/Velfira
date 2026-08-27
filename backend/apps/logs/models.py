@@ -2,6 +2,8 @@ from django.db import models
 from apps.accounts.models import User
 from apps.orders.models import Order
 
+
+#------------------[ SystemLog Model ]------------------#
 class SystemLog(models.Model):
     LEVEL_CHOICES = [('info', 'Info'), ('warning', 'Warning'), ('error', 'Error'), ('critical', 'Critical')]
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES)
