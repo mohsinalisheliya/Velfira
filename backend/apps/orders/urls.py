@@ -3,6 +3,7 @@ from .views import CheckoutView, OrderListView, OrderDetailView
 
 app_name = "orders"
 
+#-----------------------------[URL Patterns]----------------
 urlpatterns = [
     path("checkout/", CheckoutView.as_view(), name="checkout"),
     path("orders/", OrderListView.as_view(), name="order-list"),
