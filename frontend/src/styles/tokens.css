@@ -1,0 +1,17 @@
+:root{
+  --gold:#B08D3E;
+  --gold-light:#D4AF37;
+  --gold-pale:#F4E9CE;
+  --ivory:#FDFBF7;
+  --sand:#F4F1E9;
+  --charcoal:#1F1D1B;
+  --charcoal-soft:#2B2B2B;
+  --grey:#6B6B6B;
+  --grey-line:#E7E1D3;
+
+  --sp-1:8px; --sp-2:13px; --sp-3:21px; --sp-4:34px;
+  --sp-5:55px; --sp-6:89px; --sp-7:144px;
+
+  --font-serif:'Playfair Display', serif;
+  --font-sans:'Inter', sans-serif;
+}
