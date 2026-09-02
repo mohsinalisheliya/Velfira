@@ -24,6 +24,7 @@ class ProductListView(generics.ListAPIView):
         category_slug = self.request.query_params.get("category")
         min_price = self.request.query_params.get("min_price")
         max_price = self.request.query_params.get("max_price")
+        is_bestseller = self.request.query_params.get("is_bestseller")
 
         if category_slug:
             qs = qs.filter(category__slug=category_slug)
@@ -31,6 +32,8 @@ class ProductListView(generics.ListAPIView):
             qs = qs.filter(price__gte=min_price)
         if max_price:
             qs = qs.filter(price__lte=max_price)
+        if is_bestseller:
+            qs = qs.filter(is_bestseller=True)
         return qs
 
 

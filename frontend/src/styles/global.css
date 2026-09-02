@@ -102,3 +102,31 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
   body{padding-bottom:64px;}
   .mobile-bar{display:flex;}
 }
+
+.circle-row{display:flex; gap:var(--sp-4); overflow-x:auto; padding:0 var(--sp-4) 8px; scrollbar-width:none;}
+.circle-row::-webkit-scrollbar{display:none;}
+.circle-item{flex:0 0 auto; width:112px; text-align:center;}
+.circle-img{width:100px; height:100px; border-radius:50%; margin:0 auto 10px; background:radial-gradient(circle at 32% 28%, #fff, var(--gold-light) 42%, var(--gold) 100%); border:1px solid var(--grey-line);}
+.circle-item h4{font-size:12.5px; font-weight:500;}
+
+.banner{background:linear-gradient(150deg,#EFE3C4 0%, var(--gold-pale) 45%, #E3CE9C 100%); min-height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:var(--sp-5) var(--sp-4);}
+.banner-eyebrow{font-family:var(--font-serif); font-style:italic; font-size:22px; color:var(--charcoal-soft); margin-bottom:6px;}
+.banner h2{font-size:38px; letter-spacing:0.5px; margin-bottom:8px;}
+.banner p.sub{font-size:14px; color:var(--grey); margin-bottom:var(--sp-3);}
+.banner .code{display:inline-block; font-size:13px; letter-spacing:1px; margin-bottom:var(--sp-3); border-top:1px solid var(--charcoal); border-bottom:1px solid var(--charcoal); padding:6px 0;}
+.banner .code strong{color:var(--gold);}
+.ticker{background:var(--charcoal); color:var(--gold-pale); font-size:11.5px; letter-spacing:0.6px; text-transform:uppercase; padding:8px 16px; display:flex; justify-content:center; gap:32px; white-space:nowrap; overflow:hidden;}
+.ticker span{opacity:.75;}
+
+@media(max-width:640px){
+  .banner{min-height:340px; padding:var(--sp-4) 20px;}
+  .banner h2{font-size:26px;}
+  .circle-row{padding:0 20px 8px;}
+  .circle-item{width:88px;}
+  .circle-img{width:80px; height:80px;}
+}
+.editorial{background:var(--charcoal); color:var(--gold-pale); text-align:center; padding:var(--sp-7) var(--sp-4);}
+.editorial .eyebrow{color:var(--gold); font-size:12px; letter-spacing:2.2px; text-transform:uppercase; margin-bottom:var(--sp-3); display:block;}
+.editorial blockquote{font-family:var(--font-serif); font-style:italic; font-size:26px; line-height:1.5; max-width:700px; margin:0 auto var(--sp-4);}
+.editorial .divider{width:55px; height:1px; background:var(--gold); margin:0 auto var(--sp-4);}
+.editorial p.sub{color:#B9B2A0; font-size:14px; max-width:480px; margin:0 auto;}
