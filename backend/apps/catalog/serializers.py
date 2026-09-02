@@ -41,9 +41,10 @@ class ProductListSerializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source="category.name", read_only=True)
     primary_image = serializers.SerializerMethodField()
 
+
     class Meta:
         model = Product
-        fields = ["id", "name", "slug", "category_name", "price", "gst_rate", "stock_qty", "primary_image"]
+        fields = ["id", "name", "slug", "category_name", "price", "gst_rate", "stock_qty", "is_bestseller", "primary_image"]
 
     def get_primary_image(self, obj):
         first = obj.images.first()
