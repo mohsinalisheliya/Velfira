@@ -6,9 +6,15 @@ from .serializers import CategorySerializer, ProductListSerializer, ProductDetai
 
 
 class CategoryListView(generics.ListAPIView):
-    queryset = Category.objects.all()
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        qs = Category.objects.all()
+        homepage_only = self.request.query_params.get("homepage")
+        if homepage_only:
+            qs = qs.filter(show_on_homepage=True)
+        return qs
 
 
 class ProductListView(generics.ListAPIView):

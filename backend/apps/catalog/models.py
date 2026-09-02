@@ -14,6 +14,9 @@ class Category(models.Model):
     parent = models.ForeignKey(
         "self", null=True, blank=True, on_delete=models.SET_NULL, related_name="children"
     )
+    image = models.ImageField(upload_to="categories/", null=True, blank=True)
+    sort_order = models.PositiveSmallIntegerField(default=0, help_text="Lower number shows first")
+    show_on_homepage = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = "Categories"

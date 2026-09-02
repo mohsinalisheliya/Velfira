@@ -4,8 +4,10 @@ from .models import *
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name', 'slug', 'parent')
-    prepopulated_fields = {'slug': ('name',)}
+    prepopulated_fields = {"slug": ("name",)}
+    list_display = ("name", "parent", "sort_order", "show_on_homepage")
+    list_editable = ("sort_order", "show_on_homepage")
+    ordering = ("sort_order",)
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
