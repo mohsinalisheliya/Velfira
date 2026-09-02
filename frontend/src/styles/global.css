@@ -103,11 +103,14 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
   .mobile-bar{display:flex;}
 }
 
-.circle-row{display:flex; gap:var(--sp-4); overflow-x:auto; padding:0 var(--sp-4) 8px; scrollbar-width:none;}
-.circle-row::-webkit-scrollbar{display:none;}
-.circle-item{flex:0 0 auto; width:112px; text-align:center;}
-.circle-img{width:100px; height:100px; border-radius:50%; margin:0 auto 10px; background:radial-gradient(circle at 32% 28%, #fff, var(--gold-light) 42%, var(--gold) 100%); border:1px solid var(--grey-line);}
+.circle-row-wrap{position:relative;}
+.circle-row{display:flex; gap:var(--sp-4); overflow-x:auto; padding:0 var(--sp-4) 8px; scroll-snap-type:x proximity; -webkit-overflow-scrolling:touch;}
+.circle-row::-webkit-scrollbar{height:4px;}
+.circle-row::-webkit-scrollbar-thumb{background:var(--grey-line); border-radius:4px;}
+.circle-item{flex:0 0 auto; width:112px; text-align:center; scroll-snap-align:start;}
+.circle-img{width:100px; height:100px; border-radius:50%; margin:0 auto 10px; background:radial-gradient(circle at 32% 28%, #fff, var(--gold-light) 42%, var(--gold) 100%); border:1px solid var(--grey-line); overflow:hidden;}
 .circle-item h4{font-size:12.5px; font-weight:500;}
+.circle-fade{display:none; position:absolute; top:0; right:0; bottom:8px; width:40px; background:linear-gradient(90deg, transparent, var(--ivory) 85%); pointer-events:none;}
 
 .banner{background:linear-gradient(150deg,#EFE3C4 0%, var(--gold-pale) 45%, #E3CE9C 100%); min-height:420px; display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:var(--sp-5) var(--sp-4);}
 .banner-eyebrow{font-family:var(--font-serif); font-style:italic; font-size:22px; color:var(--charcoal-soft); margin-bottom:6px;}
@@ -122,8 +125,9 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
   .banner{min-height:340px; padding:var(--sp-4) 20px;}
   .banner h2{font-size:26px;}
   .circle-row{padding:0 20px 8px;}
-  .circle-item{width:88px;}
-  .circle-img{width:80px; height:80px;}
+  .circle-item{width:82px;}
+  .circle-img{width:74px; height:74px;}
+  .circle-fade{display:block;}
 }
 .editorial{background:var(--charcoal); color:var(--gold-pale); text-align:center; padding:var(--sp-7) var(--sp-4);}
 .editorial .eyebrow{color:var(--gold); font-size:12px; letter-spacing:2.2px; text-transform:uppercase; margin-bottom:var(--sp-3); display:block;}
