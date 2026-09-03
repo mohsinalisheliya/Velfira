@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { listProducts } from "../api/products";
+import { listBanners } from "../api/banners";
 import ProductCard from "../components/product/ProductCard";
 import CategoryCircleRow from "../components/product/CategoryCircleRow";
 
@@ -7,6 +8,13 @@ export default function Home() {
   const [bestsellers, setBestsellers] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [banner, setBanner] = useState(null);
+
+  useEffect(() => {
+    listBanners("home_hero")
+      .then((res) => setBanner(res.data[0] || null))
+      .catch((err) => console.error("Failed to load banner", err));
+  }, []);
 
   useEffect(() => {
     async function load() {
