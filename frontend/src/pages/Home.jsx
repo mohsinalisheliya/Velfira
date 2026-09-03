@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { listProducts } from "../api/products";
 import { listBanners } from "../api/banners";
+import BannerCarousel from "../components/common/BannerCarousel";
 import ProductCard from "../components/product/ProductCard";
 import CategoryCircleRow from "../components/product/CategoryCircleRow";
 
@@ -8,12 +9,12 @@ export default function Home() {
   const [bestsellers, setBestsellers] = useState([]);
   const [newArrivals, setNewArrivals] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [banner, setBanner] = useState(null);
+  const [banners, setBanners] = useState([]);
 
   useEffect(() => {
     listBanners("homepage_hero")
-      .then((res) => setBanner(res.data[0] || null))
-      .catch((err) => console.error("Failed to load banner", err));
+      .then((res) => setBanners(res.data))
+      .catch((err) => console.error("Failed to load banners", err));
   }, []);
 
   useEffect(() => {
@@ -36,18 +37,16 @@ export default function Home() {
 
   return (
     <>
-<div className="banner-wrap">
-  {banner?.image ? (
-    <a href={banner.link_url || "/shop"} className="banner banner-img-link">
-      <img src={banner.image} alt={banner.title || "Velfira offer"} />
-    </a>
-  ) : (
-    <div className="banner banner-empty">
-      <p>No active banner set — add one from the admin panel (Banners → Add).</p>
-      <a href="/shop" className="btn-outline">Shop Now</a>
-    </div>
-  )}
-</div>
+      {banners.length > 0 ? (
+        <BannerCarousel banners={banners} intervalMs={6000} />
+      ) : (
+        <div className="banner-wrap">
+          <div className="banner banner-empty">
+            <p>No active banners set — add some from the admin panel (Banners → Add).</p>
+            <a href="/shop" className="btn-outline">Shop Now</a>
+          </div>
+        </div>
+      )}
       <div className="ticker">
         <span>Gifts For Her @ Flat 40% Off</span>
         <span>Ships In 24 Hours</span>
