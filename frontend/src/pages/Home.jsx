@@ -11,7 +11,7 @@ export default function Home() {
   const [banner, setBanner] = useState(null);
 
   useEffect(() => {
-    listBanners("home_hero")
+    listBanners("homepage_hero")
       .then((res) => setBanner(res.data[0] || null))
       .catch((err) => console.error("Failed to load banner", err));
   }, []);
