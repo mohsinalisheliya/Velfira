@@ -29,13 +29,11 @@ export default function Home() {
   return (
     <>
       <div className="banner-wrap">
-        <div className="banner">
-          <div className="banner-eyebrow">Festive Edit</div>
-          <h2>EXTRA 30% OFF</h2>
-          <p className="sub">On our full imitation jewellery collection</p>
-          <div className="code">Code: <strong>FESTIVE30</strong></div>
-          <a href="/shop" className="btn-outline">Shop Now</a>
-        </div>
+        <div className="banner" style={{ backgroundImage: "url('/hero-banner.jpg')" }}>
+  <div className="banner-eyebrow">Festive Edit</div>
+  <h2>EXTRA 30% OFF</h2>
+  ...
+</div>
       </div>
       <div className="ticker">
         <span>Gifts For Her @ Flat 40% Off</span>
