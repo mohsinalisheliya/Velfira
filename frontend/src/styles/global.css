@@ -112,7 +112,14 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
 .circle-item h4{font-size:12.5px; font-weight:500;}
 .circle-fade{display:none; position:absolute; top:0; right:0; bottom:8px; width:40px; background:linear-gradient(90deg, transparent, var(--ivory) 85%); pointer-events:none;}
 
-
+.banner{
+  aspect-ratio: 2.4 / 1;
+  width: 100%;
+  background-size: cover;
+  background-position: center;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding:var(--sp-5) var(--sp-4);
+}
 .banner-eyebrow{font-family:var(--font-serif); font-style:italic; font-size:22px; color:var(--charcoal-soft); margin-bottom:6px;}
 .banner h2{font-size:38px; letter-spacing:0.5px; margin-bottom:8px;}
 .banner p.sub{font-size:14px; color:var(--grey); margin-bottom:var(--sp-3);}
