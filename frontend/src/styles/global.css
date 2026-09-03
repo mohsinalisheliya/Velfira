@@ -234,3 +234,19 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
   .cart-item{grid-template-columns:64px 1fr; }
   .cart-item-actions{grid-column:1/-1; flex-direction:row; justify-content:space-between; margin-top:8px;}
 }
+
+.banner-wrap{position:relative;}
+.banner-arrow{
+  position:absolute; top:50%; transform:translateY(-50%); width:36px; height:36px; border-radius:50%;
+  background:rgba(31,29,27,.7); color:#fff; display:flex; align-items:center; justify-content:center;
+  border:none; font-size:16px; z-index:2; cursor:pointer; transition:background .2s;
+}
+.banner-arrow:hover{background:rgba(31,29,27,.9);}
+.banner-arrow.left{left:16px;} .banner-arrow.right{right:16px;}
+.banner-dots{position:absolute; bottom:16px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:2;}
+.banner-dot{width:8px; height:8px; border-radius:50%; background:rgba(255,255,255,.5); border:none; padding:0; cursor:pointer; transition:background .2s, width .2s;}
+.banner-dot.active{background:#fff; width:22px; border-radius:4px;}
+
+@media(max-width:640px){
+  .banner-arrow{width:30px; height:30px; font-size:13px;}
+}
