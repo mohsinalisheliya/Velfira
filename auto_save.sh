@@ -22,6 +22,6 @@ while true; do
         echo "[$(date +"%I:%M %p")] 💤 Koi naya change nahi mila, skipping..."
     fi
 
-    # 5 minute (300 seconds) wait
-    sleep 300
+    # 2 minute (120 seconds) wait
+    sleep 10
 done
