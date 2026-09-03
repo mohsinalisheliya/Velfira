@@ -112,25 +112,19 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
 .circle-item h4{font-size:12.5px; font-weight:500;}
 .circle-fade{display:none; position:absolute; top:0; right:0; bottom:8px; width:40px; background:linear-gradient(90deg, transparent, var(--ivory) 85%); pointer-events:none;}
 
-.banner{
-  aspect-ratio: 2.4 / 1;
-  width: 100%;
-  background-size: cover;
-  background-position: center;
-  display:flex; flex-direction:column; align-items:center; justify-content:center;
-  text-align:center; padding:var(--sp-5) var(--sp-4);
+.banner{aspect-ratio:2.4/1; width:100%; overflow:hidden; position:relative; display:block;}
+.banner-img-link{display:block;}
+.banner-img-link img{width:100%; height:100%; object-fit:cover; display:block;}
+.banner-empty{
+  background:linear-gradient(150deg,#EFE3C4 0%, var(--gold-pale) 45%, #E3CE9C 100%);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px;
+  text-align:center; padding:var(--sp-4);
 }
-.banner-eyebrow{font-family:var(--font-serif); font-style:italic; font-size:22px; color:var(--charcoal-soft); margin-bottom:6px;}
-.banner h2{font-size:38px; letter-spacing:0.5px; margin-bottom:8px;}
-.banner p.sub{font-size:14px; color:var(--grey); margin-bottom:var(--sp-3);}
-.banner .code{display:inline-block; font-size:13px; letter-spacing:1px; margin-bottom:var(--sp-3); border-top:1px solid var(--charcoal); border-bottom:1px solid var(--charcoal); padding:6px 0;}
-.banner .code strong{color:var(--gold);}
+.banner-empty p{font-size:13px; color:var(--charcoal-soft); max-width:320px;}
 .ticker{background:var(--charcoal); color:var(--gold-pale); font-size:11.5px; letter-spacing:0.6px; text-transform:uppercase; padding:8px 16px; display:flex; justify-content:center; gap:32px; white-space:nowrap; overflow:hidden;}
 .ticker span{opacity:.75;}
 
 @media(max-width:640px){
-  .banner{min-height:340px; padding:var(--sp-4) 20px;}
-  .banner h2{font-size:26px;}
   .circle-row{padding:0 20px 8px;}
   .circle-item{width:82px;}
   .circle-img{width:74px; height:74px;}
