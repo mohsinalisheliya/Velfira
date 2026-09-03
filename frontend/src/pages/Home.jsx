@@ -28,15 +28,18 @@ export default function Home() {
 
   return (
     <>
-      <div className="banner-wrap">
-        <div className="banner" style={{ backgroundImage: "url('/hero-banner.jpg')" }}>
-          <div className="banner-eyebrow">Festive Edit</div>
-          <h2>EXTRA 30% OFF</h2>
-          <p className="sub">On our full imitation jewellery collection</p>
-          <div className="code">Code: <strong>FESTIVE30</strong></div>
-          <a href="/shop" className="btn-outline">Shop Now</a>
-        </div>
-      </div>
+<div className="banner-wrap">
+  {banner?.image ? (
+    <a href={banner.link_url || "/shop"} className="banner banner-img-link">
+      <img src={banner.image} alt={banner.title || "Velfira offer"} />
+    </a>
+  ) : (
+    <div className="banner banner-empty">
+      <p>No active banner set — add one from the admin panel (Banners → Add).</p>
+      <a href="/shop" className="btn-outline">Shop Now</a>
+    </div>
+  )}
+</div>
       <div className="ticker">
         <span>Gifts For Her @ Flat 40% Off</span>
         <span>Ships In 24 Hours</span>
