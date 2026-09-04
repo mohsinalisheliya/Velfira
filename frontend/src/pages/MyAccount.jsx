@@ -1,34 +1,50 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import OtpVerify from "../components/checkout/OtpVerify";
+import { listAddresses, createAddress, updateAddress, deleteAddress } from "../api/accounts";
 
 export default function MyAccount() {
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
-  // --- UI States for Editing ---
+  // --- UI States ---
   const [isEditingProfile, setIsEditingProfile] = useState(false);
   const [isAddingAddress, setIsAddingAddress] = useState(false);
   const [editingAddressId, setEditingAddressId] = useState(null);
 
-  // --- Temporary Local States for Demo (In real app, hook to your API) ---
   const [profileData, setProfileData] = useState({
     firstName: user?.first_name || "",
     lastName: user?.last_name || "",
     email: user?.email || "",
   });
 
-  // Mock Addresses Array
-  const [addresses, setAddresses] = useState([
-    // Uncomment this to see an existing address:
-    // { id: 1, line1: "123 Golden Street", line2: "Apt 4B", city: "Ahmedabad", state: "Gujarat", pincode: "380001", is_default: true }
-  ]);
-
+  // --- Address States ---
+  const [addresses, setAddresses] = useState([]);
+  const [addressLoading, setAddressLoading] = useState(false);
   const [addressForm, setAddressForm] = useState({
     line1: "", line2: "", city: "", state: "", pincode: "", is_default: false
   });
+
+  // 1. DATABASE SE ADDRESS FETCH KARNA
+  const fetchAddresses = async () => {
+    setAddressLoading(true);
+    try {
+      const res = await listAddresses();
+      setAddresses(res.data);
+    } catch (err) {
+      console.error("Failed to load addresses", err);
+    } finally {
+      setAddressLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchAddresses();
+    }
+  }, [isLoggedIn]);
 
   const handleLoginSuccess = () => {
     const next = searchParams.get("next");
@@ -49,24 +65,38 @@ export default function MyAccount() {
     ? `${profileData.firstName} ${profileData.lastName}`.trim() 
     : user.mobile_number;
 
-  // --- Handlers ---
   const handleProfileSave = (e) => {
     e.preventDefault();
-    // Todo: Call backend API to update user profile (e.g., PATCH /api/auth/profile/)
+    alert("Profile update API baki hai. Yeh abhi local save hua hai.");
     setIsEditingProfile(false);
   };
 
-  const handleAddressSave = (e) => {
+  // 2. DATABASE MEIN NAYA ADDRESS YA EDITED ADDRESS SAVE KARNA
+  const handleAddressSave = async (e) => {
     e.preventDefault();
-    // Todo: Call backend API to save address (e.g., POST or PATCH /api/accounts/addresses/)
-    if (editingAddressId) {
-      setAddresses(addresses.map(a => a.id === editingAddressId ? { ...addressForm, id: editingAddressId } : a));
-      setEditingAddressId(null);
-    } else {
-      setAddresses([...addresses, { ...addressForm, id: Date.now() }]);
-      setIsAddingAddress(false);
+    try {
+      if (editingAddressId) {
+        await updateAddress(editingAddressId, addressForm);
+      } else {
+        await createAddress(addressForm);
+      }
+      await fetchAddresses(); // Update hone ke baad list ko refresh karo
+      cancelAddressEdit();
+    } catch (err) {
+      console.error("Failed to save address", err);
+      alert("Failed to save address. Check console.");
     }
-    setAddressForm({ line1: "", line2: "", city: "", state: "", pincode: "", is_default: false });
+  };
+
+  // 3. DATABASE SE ADDRESS DELETE KARNA
+  const handleDeleteAddress = async (id) => {
+    if(!window.confirm("Are you sure you want to delete this address?")) return;
+    try {
+      await deleteAddress(id);
+      await fetchAddresses(); // Delete hone ke baad list ko refresh karo
+    } catch (err) {
+      console.error("Failed to delete address", err);
+    }
   };
 
   const startEditAddress = (addr) => {
@@ -79,7 +109,6 @@ export default function MyAccount() {
     setEditingAddressId(null);
     setAddressForm({ line1: "", line2: "", city: "", state: "", pincode: "", is_default: false });
   };
-
 
   return (
     <div className="section">
@@ -173,7 +202,9 @@ export default function MyAccount() {
             ) : (
               <>
                 {/* List of Saved Addresses */}
-                {addresses.length === 0 ? (
+                {addressLoading ? (
+                  <p style={{ fontSize: "13.5px", color: "var(--grey)", margin: 0, textAlign: "center" }}>Loading...</p>
+                ) : addresses.length === 0 ? (
                   <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", border: "1px dashed var(--grey-line)", padding: "20px", textAlign: "center" }}>
                     <p style={{ fontSize: "13.5px", color: "var(--grey)", margin: 0 }}>
                       No saved addresses yet.<br/>
@@ -193,7 +224,7 @@ export default function MyAccount() {
                         <button onClick={() => startEditAddress(addr)} className="btn-outline" style={{ padding: "0", border: "none", fontSize: "12px", color: "var(--gold)", textDecoration: "underline", marginRight: "12px" }}>
                           Edit
                         </button>
-                        <button onClick={() => setAddresses(addresses.filter(a => a.id !== addr.id))} className="btn-outline" style={{ padding: "0", border: "none", fontSize: "12px", color: "red", textDecoration: "underline" }}>
+                        <button onClick={() => handleDeleteAddress(addr.id)} className="btn-outline" style={{ padding: "0", border: "none", fontSize: "12px", color: "red", textDecoration: "underline" }}>
                           Remove
                         </button>
                       </div>
