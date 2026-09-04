@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState } from "react";
 import { verifyOtp as verifyOtpApi, sendOtp as sendOtpApi } from "../api/otp";
 
 const AuthContext = createContext(null);
@@ -11,7 +11,8 @@ export function AuthProvider({ children }) {
 
   const sendOtp = (mobile) => sendOtpApi(mobile);
 
-  const verifyOtp = async (mobile, otp, profileData) => {
+  // Yahan profileData receive kiya aur API ko bheja
+  const verifyOtp = async (mobile, otp, profileData = {}) => {
     const { data } = await verifyOtpApi(mobile, otp, profileData);
     localStorage.setItem("velfira_access", data.access);
     localStorage.setItem("velfira_refresh", data.refresh);
