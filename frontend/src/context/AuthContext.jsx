@@ -11,8 +11,8 @@ export function AuthProvider({ children }) {
 
   const sendOtp = (mobile) => sendOtpApi(mobile);
 
-  const verifyOtp = async (mobile, otp) => {
-    const { data } = await verifyOtpApi(mobile, otp, );
+  const verifyOtp = async (mobile, otp, profileData) => {
+    const { data } = await verifyOtpApi(mobile, otp, profileData);
     localStorage.setItem("velfira_access", data.access);
     localStorage.setItem("velfira_refresh", data.refresh);
     localStorage.setItem("velfira_user", JSON.stringify(data.user));
