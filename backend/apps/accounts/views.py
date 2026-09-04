@@ -101,3 +101,32 @@ class AddressListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+from .models import Address
+from .serializers import AddressSerializer
+
+class AddressListView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        # Agar is_default True hai, toh baaki sab ko False kar do
+        if serializer.validated_data.get('is_default', False):
+            Address.objects.filter(user=self.request.user).update(is_default=False)
+        serializer.save(user=self.request.user)
+
+class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_update(self, serializer):
+        if serializer.validated_data.get('is_default', False):
+            Address.objects.filter(user=self.request.user).update(is_default=False)
+        serializer.save()
