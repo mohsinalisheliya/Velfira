@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import OtpVerify from "../components/checkout/OtpVerify";
@@ -6,6 +7,28 @@ export default function MyAccount() {
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+
+  // --- UI States for Editing ---
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [isAddingAddress, setIsAddingAddress] = useState(false);
+  const [editingAddressId, setEditingAddressId] = useState(null);
+
+  // --- Temporary Local States for Demo (In real app, hook to your API) ---
+  const [profileData, setProfileData] = useState({
+    firstName: user?.first_name || "",
+    lastName: user?.last_name || "",
+    email: user?.email || "",
+  });
+
+  // Mock Addresses Array
+  const [addresses, setAddresses] = useState([
+    // Uncomment this to see an existing address:
+    // { id: 1, line1: "123 Golden Street", line2: "Apt 4B", city: "Ahmedabad", state: "Gujarat", pincode: "380001", is_default: true }
+  ]);
+
+  const [addressForm, setAddressForm] = useState({
+    line1: "", line2: "", city: "", state: "", pincode: "", is_default: false
+  });
 
   const handleLoginSuccess = () => {
     const next = searchParams.get("next");
@@ -22,9 +45,41 @@ export default function MyAccount() {
     );
   }
 
-  const displayName = user.first_name || user.last_name 
-    ? `${user.first_name} ${user.last_name}`.trim() 
+  const displayName = profileData.firstName || profileData.lastName 
+    ? `${profileData.firstName} ${profileData.lastName}`.trim() 
     : user.mobile_number;
+
+  // --- Handlers ---
+  const handleProfileSave = (e) => {
+    e.preventDefault();
+    // Todo: Call backend API to update user profile (e.g., PATCH /api/auth/profile/)
+    setIsEditingProfile(false);
+  };
+
+  const handleAddressSave = (e) => {
+    e.preventDefault();
+    // Todo: Call backend API to save address (e.g., POST or PATCH /api/accounts/addresses/)
+    if (editingAddressId) {
+      setAddresses(addresses.map(a => a.id === editingAddressId ? { ...addressForm, id: editingAddressId } : a));
+      setEditingAddressId(null);
+    } else {
+      setAddresses([...addresses, { ...addressForm, id: Date.now() }]);
+      setIsAddingAddress(false);
+    }
+    setAddressForm({ line1: "", line2: "", city: "", state: "", pincode: "", is_default: false });
+  };
+
+  const startEditAddress = (addr) => {
+    setAddressForm(addr);
+    setEditingAddressId(addr.id);
+  };
+
+  const cancelAddressEdit = () => {
+    setIsAddingAddress(false);
+    setEditingAddressId(null);
+    setAddressForm({ line1: "", line2: "", city: "", state: "", pincode: "", is_default: false });
+  };
+
 
   return (
     <div className="section">
@@ -37,49 +92,116 @@ export default function MyAccount() {
       
       <div style={{ padding: "0 34px", marginBottom: "32px" }}>
         
-        {/* Grid for Profile and Address Cards */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: "24px", maxWidth: "900px", marginBottom: "32px" }}>
           
-          {/* Profile Details Box */}
-          <div style={{ background: "var(--sand)", padding: "24px", border: "1px solid var(--grey-line)" }}>
-            <h3 style={{ marginBottom: "16px", fontSize: "16px", color: "var(--gold)", textTransform: "uppercase", letterSpacing: "1px" }}>
-              Profile Details
-            </h3>
-            <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
-              <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Name:</strong> 
-              {user.first_name} {user.last_name}
-            </p>
-            <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
-              <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Mobile:</strong> 
-              +91 {user.mobile_number} 
-              {user.mobile_verified && (
-                <span style={{ color: "#3A7D44", fontSize: "12px", marginLeft: "10px", fontWeight: "500" }}>✓ Verified</span>
+          {/* --- PROFILE DETAILS SECTION --- */}
+          <div style={{ background: "var(--sand)", padding: "24px", border: "1px solid var(--grey-line)", position: "relative" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+              <h3 style={{ fontSize: "16px", color: "var(--gold)", textTransform: "uppercase", letterSpacing: "1px", margin: 0 }}>
+                Profile Details
+              </h3>
+              {!isEditingProfile && (
+                <button onClick={() => setIsEditingProfile(true)} className="btn-outline" style={{ padding: "4px 10px", fontSize: "11px", border: "none", textDecoration: "underline" }}>
+                  Edit
+                </button>
               )}
-            </p>
-            <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
-              <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Email:</strong> 
-              {user.email || <span style={{ color: "var(--grey)", fontStyle: "italic" }}>Not provided</span>}
-            </p>
+            </div>
+
+            {isEditingProfile ? (
+              <form onSubmit={handleProfileSave}>
+                <div style={{ display: "flex", gap: "10px", marginBottom: "12px" }}>
+                  <input type="text" placeholder="First Name" value={profileData.firstName} onChange={(e) => setProfileData({...profileData, firstName: e.target.value})} style={{ flex: 1, padding: "8px", border: "1px solid var(--grey-line)" }} required />
+                  <input type="text" placeholder="Last Name" value={profileData.lastName} onChange={(e) => setProfileData({...profileData, lastName: e.target.value})} style={{ flex: 1, padding: "8px", border: "1px solid var(--grey-line)" }} required />
+                </div>
+                <input type="email" placeholder="Email Address" value={profileData.email} onChange={(e) => setProfileData({...profileData, email: e.target.value})} style={{ width: "100%", padding: "8px", border: "1px solid var(--grey-line)", marginBottom: "12px" }} />
+                
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button type="submit" className="btn-gold" style={{ padding: "8px 16px", fontSize: "12px" }}>Save</button>
+                  <button type="button" className="btn-outline" onClick={() => setIsEditingProfile(false)} style={{ padding: "8px 16px", fontSize: "12px", border: "none" }}>Cancel</button>
+                </div>
+              </form>
+            ) : (
+              <>
+                <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
+                  <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Name:</strong> 
+                  {profileData.firstName} {profileData.lastName}
+                </p>
+                <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
+                  <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Mobile:</strong> 
+                  +91 {user.mobile_number} 
+                  {user.mobile_verified && (
+                    <span style={{ color: "#3A7D44", fontSize: "12px", marginLeft: "10px", fontWeight: "500" }}>✓ Verified</span>
+                  )}
+                </p>
+                <p style={{ margin: "10px 0", fontSize: "14.5px", color: "var(--charcoal-soft)" }}>
+                  <strong style={{ color: "var(--charcoal)", display: "inline-block", width: "70px" }}>Email:</strong> 
+                  {profileData.email || <span style={{ color: "var(--grey)", fontStyle: "italic" }}>Not provided</span>}
+                </p>
+              </>
+            )}
           </div>
 
-          {/* Saved Addresses Box */}
+          {/* --- SAVED ADDRESSES SECTION --- */}
           <div style={{ background: "var(--sand)", padding: "24px", border: "1px solid var(--grey-line)", display: "flex", flexDirection: "column" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
               <h3 style={{ fontSize: "16px", color: "var(--gold)", textTransform: "uppercase", letterSpacing: "1px", margin: 0 }}>
                 Saved Addresses
               </h3>
-              <button className="btn-outline" style={{ padding: "6px 12px", fontSize: "11px", letterSpacing: "0.5px" }}>
-                + ADD NEW
-              </button>
+              {(!isAddingAddress && !editingAddressId) && (
+                <button onClick={() => setIsAddingAddress(true)} className="btn-outline" style={{ padding: "6px 12px", fontSize: "11px", letterSpacing: "0.5px" }}>
+                  + ADD NEW
+                </button>
+              )}
             </div>
             
-            {/* Placeholder for when no address is saved */}
-            <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", border: "1px dashed var(--grey-line)", padding: "20px", textAlign: "center" }}>
-              <p style={{ fontSize: "13.5px", color: "var(--grey)", margin: 0 }}>
-                No saved addresses yet.<br/>
-                Add one for faster checkout.
-              </p>
-            </div>
+            {/* Address Form (Add / Edit) */}
+            {(isAddingAddress || editingAddressId) ? (
+              <form onSubmit={handleAddressSave} style={{ borderTop: "1px solid var(--grey-line)", paddingTop: "16px" }}>
+                <input type="text" placeholder="Address Line 1" value={addressForm.line1} onChange={e => setAddressForm({...addressForm, line1: e.target.value})} required style={{ width: "100%", padding: "8px", border: "1px solid var(--grey-line)", marginBottom: "10px" }} />
+                <input type="text" placeholder="Landmark / Line 2 (Optional)" value={addressForm.line2} onChange={e => setAddressForm({...addressForm, line2: e.target.value})} style={{ width: "100%", padding: "8px", border: "1px solid var(--grey-line)", marginBottom: "10px" }} />
+                <div style={{ display: "flex", gap: "10px", marginBottom: "10px" }}>
+                  <input type="text" placeholder="City" value={addressForm.city} onChange={e => setAddressForm({...addressForm, city: e.target.value})} required style={{ flex: 1, padding: "8px", border: "1px solid var(--grey-line)" }} />
+                  <input type="text" placeholder="Pincode" value={addressForm.pincode} onChange={e => setAddressForm({...addressForm, pincode: e.target.value.replace(/\D/g, "")})} maxLength="6" required style={{ width: "100px", padding: "8px", border: "1px solid var(--grey-line)" }} />
+                </div>
+                <input type="text" placeholder="State" value={addressForm.state} onChange={e => setAddressForm({...addressForm, state: e.target.value})} required style={{ width: "100%", padding: "8px", border: "1px solid var(--grey-line)", marginBottom: "16px" }} />
+                
+                <div style={{ display: "flex", gap: "10px" }}>
+                  <button type="submit" className="btn-gold" style={{ padding: "8px 16px", fontSize: "12px" }}>Save Address</button>
+                  <button type="button" className="btn-outline" onClick={cancelAddressEdit} style={{ padding: "8px 16px", fontSize: "12px", border: "none" }}>Cancel</button>
+                </div>
+              </form>
+            ) : (
+              <>
+                {/* List of Saved Addresses */}
+                {addresses.length === 0 ? (
+                  <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", border: "1px dashed var(--grey-line)", padding: "20px", textAlign: "center" }}>
+                    <p style={{ fontSize: "13.5px", color: "var(--grey)", margin: 0 }}>
+                      No saved addresses yet.<br/>
+                      Add one for faster checkout.
+                    </p>
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    {addresses.map(addr => (
+                      <div key={addr.id} style={{ borderBottom: "1px solid var(--grey-line)", paddingBottom: "16px" }}>
+                        <p style={{ fontSize: "14px", color: "var(--charcoal)", marginBottom: "4px", fontWeight: "500" }}>
+                          {addr.line1} {addr.line2 ? `, ${addr.line2}` : ""}
+                        </p>
+                        <p style={{ fontSize: "13px", color: "var(--charcoal-soft)", marginBottom: "8px" }}>
+                          {addr.city}, {addr.state} - {addr.pincode}
+                        </p>
+                        <button onClick={() => startEditAddress(addr)} className="btn-outline" style={{ padding: "0", border: "none", fontSize: "12px", color: "var(--gold)", textDecoration: "underline", marginRight: "12px" }}>
+                          Edit
+                        </button>
+                        <button onClick={() => setAddresses(addresses.filter(a => a.id !== addr.id))} className="btn-outline" style={{ padding: "0", border: "none", fontSize: "12px", color: "red", textDecoration: "underline" }}>
+                          Remove
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
           </div>
 
         </div>
