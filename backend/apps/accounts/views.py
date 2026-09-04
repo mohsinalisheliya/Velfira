@@ -84,3 +84,18 @@ class AdminLoginView(APIView):
             "username": user.username,
             "is_staff": user.is_staff,
         })
+
+# apps/accounts/views.py mein import kar
+from rest_framework import generics
+from rest_framework.permissions import IsAuthenticated
+
+# Aur ye class add kar de:
+class AddressListView(generics.ListCreateAPIView):
+    serializer_class = AddressSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        return Address.objects.filter(user=self.request.user)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
