@@ -4,7 +4,7 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.utils.crypto import get_random_string
 
-from backend.apps.orders.serializers import AddressSerializer
+from apps.orders.serializers import AddressSerializer
 from .models import *
 from .otp import send_otp, verify_otp
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSerializer
