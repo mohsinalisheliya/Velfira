@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from .models import User
+from .models import User, Address
 
 class SendOTPSerializer(serializers.Serializer):
     mobile_number = serializers.CharField(max_length=15)
+    action = serializers.ChoiceField(choices=["login", "signup"]) # Action field added
 
 class VerifyOTPSerializer(serializers.Serializer):
     mobile_number = serializers.CharField(max_length=15)
     otp = serializers.CharField(max_length=6)
-    # Naye fields add kiye hain signup ke liye
+    action = serializers.ChoiceField(choices=["login", "signup"]) # Action field added
     first_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
     last_name = serializers.CharField(max_length=150, required=False, allow_blank=True)
     email = serializers.EmailField(required=False, allow_blank=True)
@@ -17,7 +18,6 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = User
         fields = ["id", "mobile_number", "mobile_verified", "email", "first_name", "last_name"]
 
-from .models import Address
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
