@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import OtpVerify from "../components/checkout/OtpVerify";
 import { listAddresses, createAddress, updateAddress, deleteAddress } from "../api/accounts";
-
+import { listAddresses, createAddress, updateAddress, deleteAddress, updateProfile } from "../api/accounts";
 export default function MyAccount() {
   const { user, isLoggedIn, logout } = useAuth();
   const navigate = useNavigate();
