@@ -1,8 +1,9 @@
 import axiosClient from "./axiosClient";
 
-export const sendOtp = (mobile_number) =>
-  axiosClient.post("/auth/otp/send/", { mobile_number });
+// Ab sendOtp mein bhi action jayega
+export const sendOtp = (mobile_number, action) =>
+  axiosClient.post("/auth/otp/send/", { mobile_number, action });
 
-// Teesra parameter profileData add kiya aur spread (...) kar diya
-export const verifyOtp = (mobile_number, otp, profileData = {}) =>
-  axiosClient.post("/auth/otp/verify/", { mobile_number, otp, ...profileData });
+// Verify mein bhi action jayega
+export const verifyOtp = (mobile_number, otp, profileData = {}, action) =>
+  axiosClient.post("/auth/otp/verify/", { mobile_number, otp, ...profileData, action });
