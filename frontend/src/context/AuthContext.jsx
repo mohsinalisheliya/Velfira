@@ -9,11 +9,12 @@ export function AuthProvider({ children }) {
     return saved ? JSON.parse(saved) : null;
   });
 
-  const sendOtp = (mobile) => sendOtpApi(mobile);
+  // Action add kiya
+  const sendOtp = (mobile, action) => sendOtpApi(mobile, action);
 
-  // Yahan profileData receive kiya aur API ko bheja
-  const verifyOtp = async (mobile, otp, profileData = {}) => {
-    const { data } = await verifyOtpApi(mobile, otp, profileData);
+  // Action add kiya
+  const verifyOtp = async (mobile, otp, profileData = {}, action) => {
+    const { data } = await verifyOtpApi(mobile, otp, profileData, action);
     localStorage.setItem("velfira_access", data.access);
     localStorage.setItem("velfira_refresh", data.refresh);
     localStorage.setItem("velfira_user", JSON.stringify(data.user));
