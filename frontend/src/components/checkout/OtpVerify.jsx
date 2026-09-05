@@ -60,30 +60,34 @@ export default function OtpVerify({ onSuccess }) {
     }
   };
 
-  const handleVerifyOtp = async (e) => {
-    e.preventDefault();
-    setError("");
+const handleVerifyOtp = async (e) => {
+  e.preventDefault();
+  setError("");
 
-    if (otp.length !== 6) {
-      setError("Enter the 6-digit OTP.");
-      return;
+  if (otp.length !== 6) {
+    setError("Enter the 6-digit OTP.");
+    return;
+  }
+
+  setLoading(true);
+  try {
+    const profileData = authMode === "signup"
+      ? { first_name: firstName, last_name: lastName, email: email }
+      : {};
+
+    await verifyOtp(mobile, otp, profileData);
+    onSuccess?.();
+  } catch (err) {
+    const msg = err.response?.data?.detail || "Incorrect OTP. Try again.";
+    setError(msg);
+    if (msg.includes("isn't registered")) {
+      setAuthMode("signup");
+      setStep("mobile");
     }
-    
-    setLoading(true);
-    try {
-      // Pass profile fields ONLY if it's a signup, otherwise pass empty object
-      const profileData = authMode === "signup" 
-        ? { first_name: firstName, last_name: lastName, email: email } 
-        : {};
-        
-      await verifyOtp(mobile, otp, profileData);
-      onSuccess?.();
-    } catch (err) {
-      setError(err.response?.data?.detail || "Incorrect OTP. Try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (step === "mobile") {
     return (
