@@ -23,9 +23,9 @@ export default function MyAccount() {
   // --- Address States ---
   const [addresses, setAddresses] = useState([]);
   const [addressLoading, setAddressLoading] = useState(false);
-  const [addressForm, setAddressForm] = useState({
-    line1: "", line2: "", city: "", state: "", pincode: "", is_default: false
-  });
+  const [addressForm, setAddressForm] = useState({ full_name: "", mobile_number: "", 
+    pincode: "", flat: "", area: "",
+     landmark: "", city: "", state: "", is_default: false });
 
   // 1. DATABASE SE ADDRESS FETCH KARNA
   const fetchAddresses = async () => {
