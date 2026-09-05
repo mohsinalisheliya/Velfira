@@ -11,7 +11,8 @@ from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSeriali
 from django.contrib.auth import authenticate
 
 class SendOTPView(APIView):
-    permission_classes = []  # public endpoint
+    permission_classes = []
+
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
