@@ -111,3 +111,11 @@ class AddressDetailView(generics.RetrieveUpdateDestroyAPIView):
         if serializer.validated_data.get('is_default', False):
             Address.objects.filter(user=self.request.user).update(is_default=False)
         serializer.save()
+
+class ProfileView(generics.RetrieveUpdateAPIView):
+    serializer_class = CustomerSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        # Ye hamesha logged-in user ki details hi return/update karega
+        return self.request.user
