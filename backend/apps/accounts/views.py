@@ -20,40 +20,45 @@ class SendOTPView(APIView):
         return Response({"detail": "OTP sent."}, status=status.HTTP_200_OK)
 
 class VerifyOTPView(APIView):
-    permission_classes = []  # public endpoint
+    permission_classes = []
+
     def post(self, request):
         serializer = VerifyOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        
         mobile_number = serializer.validated_data["mobile_number"]
         otp = serializer.validated_data["otp"]
-        first_name = serializer.validated_data.get("first_name", "")
-        last_name = serializer.validated_data.get("last_name", "")
-        email = serializer.validated_data.get("email", "")
+        first_name = serializer.validated_data.get("first_name", "").strip()
+        last_name = serializer.validated_data.get("last_name", "").strip()
+        email = serializer.validated_data.get("email", "").strip()
 
         ok, message = verify_otp(mobile_number, otp)
         if not ok:
             return Response({"detail": message}, status=status.HTTP_400_BAD_REQUEST)
 
-        # get or create the customer account tied to this mobile number
-        user, created = User.objects.get_or_create(
-            mobile_number=mobile_number,
-            defaults={
-                "username": f"cust_{mobile_number}_{get_random_string(4)}",
-                "first_name": first_name,
-                "last_name": last_name,
-                "email": email
-            },
-        )
-        
-        # Agar user existing hai par name update kar raha hai
-        if not created and (first_name or last_name or email):
-            if first_name: user.first_name = first_name
-            if last_name: user.last_name = last_name
-            if email: user.email = email
+        existing_user = User.objects.filter(mobile_number=mobile_number).first()
+
+        if existing_user is None:
+            # Brand new number — name is COMPULSORY, no matter which tab/flow was used.
+            if not first_name or not last_name:
+                return Response(
+                    {"detail": "This number isn't registered yet. Please sign up with your name to continue."},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            user = User.objects.create(
+                mobile_number=mobile_number,
+                username=f"cust_{mobile_number}_{get_random_string(4)}",
+                first_name=first_name,
+                last_name=last_name,
+                email=email,
+            )
+            created = True
+        else:
+            # Existing user — NEVER touch their saved name/email again, ignore whatever was sent.
+            user = existing_user
+            created = False
 
         user.mobile_verified = True
-        user.save()
+        user.save(update_fields=["mobile_verified"])
 
         refresh = RefreshToken.for_user(user)
         return Response({
