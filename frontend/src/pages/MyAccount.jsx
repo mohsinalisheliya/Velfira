@@ -238,7 +238,7 @@ const handleProfileSave = async (e) => {
                     {addresses.map(addr => (
                       <div key={addr.id} style={{ borderBottom: "1px solid var(--grey-line)", paddingBottom: "16px" }}>
                         <p style={{ fontSize: "14px", color: "var(--charcoal)", marginBottom: "4px", fontWeight: "500" }}>
-                          {addr.line1} {addr.line2 ? `, ${addr.line2}` : ""}
+                         {addr.line1}  {addr.line2 ? `, ${addr.line2}` : ""}
                         </p>
                         <p style={{ fontSize: "13px", color: "var(--charcoal-soft)", marginBottom: "8px" }}>
                           {addr.city}, {addr.state} - {addr.pincode}
