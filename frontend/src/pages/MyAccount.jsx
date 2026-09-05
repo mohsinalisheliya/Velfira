@@ -65,10 +65,32 @@ export default function MyAccount() {
     ? `${profileData.firstName} ${profileData.lastName}`.trim() 
     : user.mobile_number;
 
-  const handleProfileSave = (e) => {
+const handleProfileSave = async (e) => {
     e.preventDefault();
-    alert("Profile update API baki hai. Yeh abhi local save hua hai.");
-    setIsEditingProfile(false);
+    try {
+      const payload = {
+        first_name: profileData.firstName,
+        last_name: profileData.lastName,
+        email: profileData.email
+      };
+      
+      // 1. Backend me save karo
+      const res = await updateProfile(payload);
+      
+      // 2. Local storage ko update karo taaki app ka context fresh rahe
+      const currentUser = JSON.parse(localStorage.getItem("velfira_user") || "{}");
+      const updatedUser = { ...currentUser, ...res.data };
+      localStorage.setItem("velfira_user", JSON.stringify(updatedUser));
+      
+      setIsEditingProfile(false);
+      
+      // 3. Page ko reload karo taaki AuthContext naya naam utha le (Welcome back, Name!)
+      window.location.reload();
+      
+    } catch (err) {
+      console.error("Profile update failed", err);
+      alert("Failed to update profile. Check console.");
+    }
   };
 
   // 2. DATABASE MEIN NAYA ADDRESS YA EDITED ADDRESS SAVE KARNA
