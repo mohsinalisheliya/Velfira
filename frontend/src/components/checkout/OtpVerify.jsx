@@ -32,17 +32,14 @@ export default function OtpVerify({ onSuccess }) {
     }, 1000);
   };
 
-  const handleSendOtp = async (e) => {
+const handleSendOtp = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Basic Validation
     if (!validMobile) {
       setError("Enter a valid 10-digit mobile number.");
       return;
     }
-    
-    // Name validation only if user is signing up
     if (authMode === "signup" && (!firstName.trim() || !lastName.trim())) {
       setError("First Name and Last Name are compulsory for new accounts.");
       return;
@@ -50,7 +47,8 @@ export default function OtpVerify({ onSuccess }) {
 
     setLoading(true);
     try {
-      await sendOtp(mobile);
+      // Yahan authMode (login ya signup) pass kiya
+      await sendOtp(mobile, authMode);
       setStep("otp");
       startResendTimer();
     } catch (err) {
@@ -60,34 +58,30 @@ export default function OtpVerify({ onSuccess }) {
     }
   };
 
-const handleVerifyOtp = async (e) => {
-  e.preventDefault();
-  setError("");
+  const handleVerifyOtp = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  if (otp.length !== 6) {
-    setError("Enter the 6-digit OTP.");
-    return;
-  }
-
-  setLoading(true);
-  try {
-    const profileData = authMode === "signup"
-      ? { first_name: firstName, last_name: lastName, email: email }
-      : {};
-
-    await verifyOtp(mobile, otp, profileData);
-    onSuccess?.();
-  } catch (err) {
-    const msg = err.response?.data?.detail || "Incorrect OTP. Try again.";
-    setError(msg);
-    if (msg.includes("isn't registered")) {
-      setAuthMode("signup");
-      setStep("mobile");
+    if (otp.length !== 6) {
+      setError("Enter the 6-digit OTP.");
+      return;
     }
-  } finally {
-    setLoading(false);
-  }
-};
+    
+    setLoading(true);
+    try {
+      const profileData = authMode === "signup" 
+        ? { first_name: firstName, last_name: lastName, email: email } 
+        : {};
+      
+      // Yahan authMode pass kiya
+      await verifyOtp(mobile, otp, profileData, authMode);
+      onSuccess?.();
+    } catch (err) {
+      setError(err.response?.data?.detail || "Incorrect OTP. Try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (step === "mobile") {
     return (
