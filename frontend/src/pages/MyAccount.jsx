@@ -131,7 +131,8 @@ const handleProfileSave = async (e) => {
   const cancelAddressEdit = () => {
     setIsAddingAddress(false);
     setEditingAddressId(null);
-    setAddressForm({ full_name: "", mobile_number: user?.mobile_number || "", pincode: "", flat: "", area: "", landmark: "", city: "", state: "", is_default: false });
+    setAddressForm({ line1: "", line2: "", city: "", state: "", pincode: "", is_default: false });
+  };
 
   return (
     <div className="section">
