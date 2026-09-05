@@ -177,7 +177,7 @@ export default function Checkout() {
                               {user.first_name} {user.last_name}
                             </p>
                             <p style={{ margin: 0, fontSize: "13px", color: "var(--charcoal-soft)" }}>
-                              {addr.line1} {addr.line2 ? `, ${addr.line2}` : ""}
+                             {addr.flat}, {addr.area} {addr.landmark ? `(Near ${addr.landmark})` : ""}
                             </p>
                             <p style={{ margin: 0, fontSize: "13px", color: "var(--charcoal-soft)" }}>
                               {addr.city}, {addr.state} - {addr.pincode}
