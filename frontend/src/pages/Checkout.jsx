@@ -22,10 +22,7 @@ export default function Checkout() {
   const [savedAddresses, setSavedAddresses] = useState([]);
   const [selectedAddressId, setSelectedAddressId] = useState(null);
   const [isAddingNew, setIsAddingNew] = useState(false);
-  const [newAddress, setNewAddress] = useState(
-    { full_name: "", mobile_number: "", pincode: "", flat: "", area: "",
-         landmark: "", city: "", state: "", is_default: false }
-  );
+
   
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
