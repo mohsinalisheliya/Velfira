@@ -6,8 +6,8 @@ from apps.accounts.models import Address
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ["id", "line1", "line2", "city", "state", "pincode", "is_default"]
-
+        fields = ["id", "full_name", "mobile_number", "flat", "area", "landmark", "city", "state", "pincode", "is_default"]
+        
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product_name = serializers.CharField(source="product.name")
