@@ -79,8 +79,7 @@ export default function Checkout() {
   const discount = cart.discount_amount || 0; // Assuming backend sends this if applied
   const finalTotal = Math.max(0, subtotal - discount);
 
-  const addressValid = newAddress.line1 && newAddress.city && newAddress.state && newAddress.pincode.length === 6;
-
+  const addressValid = newAddress.flat && newAddress.area && newAddress.city && newAddress.state && newAddress.pincode.length === 6;
   const handleOtpSuccess = () => {
     setStep(STEPS.ADDRESS);
   };
