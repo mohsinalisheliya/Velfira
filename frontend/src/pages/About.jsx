@@ -3,81 +3,77 @@ import { Link } from "react-router-dom";
 export default function About() {
   return (
     <>
-      {/* Hero / Editorial Section */}
-      <section className="editorial" style={{ paddingTop: "var(--sp-7)", paddingBottom: "var(--sp-7)" }}>
+      <section className="editorial about-editorial">
         <span className="eyebrow">Our Story</span>
         <blockquote>"Redefining everyday luxury for the modern woman."</blockquote>
         <div className="divider"></div>
         <p className="sub">
-          Velfira was born from a simple belief: high-quality, elegant jewellery shouldn't come with an intimidating price tag or the fear of tarnishing.
+          Velfira was born from a simple belief: high-quality, elegant jewellery
+          shouldn't come with an intimidating price tag or the fear of tarnishing.
         </p>
       </section>
 
-      {/* Mission Section */}
-      <section className="section" style={{ maxWidth: "800px", margin: "0 auto", textAlign: "center", padding: "var(--sp-6) var(--sp-4)" }}>
-        <h2 style={{ fontSize: "32px", marginBottom: "24px" }}>Luxury Without Limits</h2>
-        <p style={{ fontSize: "16px", color: "var(--grey)", lineHeight: "1.8", marginBottom: "16px" }}>
-          We noticed a gap in the market. You either had to spend a fortune on solid gold, or settle for imitation pieces that lost their shine after a few wears. Velfira bridges that gap perfectly.
+      <section className="about-mission">
+        <h2>Luxury Without Limits</h2>
+        <p>
+          We noticed a gap in the market. You either had to spend a fortune on
+          solid gold, or settle for imitation pieces that lost their shine
+          after a few wears. Velfira bridges that gap perfectly.
         </p>
-        <p style={{ fontSize: "16px", color: "var(--grey)", lineHeight: "1.8" }}>
-          Our pieces are meticulously crafted with premium materials and finished with an advanced anti-tarnish coating. This means you get the rich, heavy look of fine jewellery that effortlessly withstands perfumes, lotions, and your daily hustle.
+        <p>
+          Our pieces are meticulously crafted with premium materials and
+          finished with an advanced anti-tarnish coating — the rich, heavy
+          look of fine jewellery that effortlessly withstands perfumes,
+          lotions, and your daily hustle.
         </p>
       </section>
 
-      {/* Pillars / USPs Grid */}
-      <section className="section" style={{ background: "var(--sand)", padding: "var(--sp-6) 0" }}>
-        <div className="section-head" style={{ justifyContent: "center", textAlign: "center", marginBottom: "48px" }}>
+      <section className="about-usp-section">
+        <div className="section-head" style={{ justifyContent: "center", textAlign: "center" }}>
           <div>
-            <span className="eyebrow">Why Choose Us</span>
+            <span className="eyebrow">Why choose us</span>
             <h2>The Velfira Promise</h2>
           </div>
         </div>
-        
-        <div className="grid" style={{ maxWidth: "1180px", margin: "0 auto" }}>
-          {/* USP 1 */}
-          <div className="card" style={{ padding: "32px 24px", textAlign: "center", background: "var(--ivory)", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-            <div className="order-confirm-icon" style={{ margin: "0 auto 16px", width: "48px", height: "48px", fontSize: "20px" }}>✨</div>
-            <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "18px", marginBottom: "8px", color: "var(--charcoal)" }}>Anti-Tarnish</h4>
-            <p style={{ fontSize: "13.5px", color: "var(--grey)", lineHeight: "1.6", margin: 0 }}>
-              Advanced plating technology ensures your jewellery keeps its original shine, wear after wear.
-            </p>
+
+        <div className="usp-grid">
+          <div className="usp-card">
+            <div className="usp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M12 2l1.8 5.6L19 9l-5.2 1.4L12 16l-1.8-5.6L5 9l5.2-1.4L12 2Z"/></svg>
+            </div>
+            <h4>Anti-Tarnish</h4>
+            <p>Advanced plating technology ensures your jewellery keeps its original shine, wear after wear.</p>
           </div>
 
-          {/* USP 2 */}
-          <div className="card" style={{ padding: "32px 24px", textAlign: "center", background: "var(--ivory)", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-            <div className="order-confirm-icon" style={{ margin: "0 auto 16px", width: "48px", height: "48px", fontSize: "20px" }}>💧</div>
-            <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "18px", marginBottom: "8px", color: "var(--charcoal)" }}>Skin Friendly</h4>
-            <p style={{ fontSize: "13.5px", color: "var(--grey)", lineHeight: "1.6", margin: 0 }}>
-              100% lead and nickel free. Designed to be hypoallergenic and safe for sensitive skin.
-            </p>
+          <div className="usp-card">
+            <div className="usp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M12 3c3 4 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-7 6-11Z"/></svg>
+            </div>
+            <h4>Skin Friendly</h4>
+            <p>100% lead and nickel free. Designed to be hypoallergenic and safe for sensitive skin.</p>
           </div>
 
-          {/* USP 3 */}
-          <div className="card" style={{ padding: "32px 24px", textAlign: "center", background: "var(--ivory)", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-            <div className="order-confirm-icon" style={{ margin: "0 auto 16px", width: "48px", height: "48px", fontSize: "20px" }}>💎</div>
-            <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "18px", marginBottom: "8px", color: "var(--charcoal)" }}>Premium Finish</h4>
-            <p style={{ fontSize: "13.5px", color: "var(--grey)", lineHeight: "1.6", margin: 0 }}>
-              Crafted to mimic the exact weight, texture, and visual appeal of real 18k and 22k gold.
-            </p>
+          <div className="usp-card">
+            <div className="usp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M6 9l6-6 6 6-6 11-6-11Z"/><path d="M6 9h12"/></svg>
+            </div>
+            <h4>Premium Finish</h4>
+            <p>Crafted to mimic the exact weight, texture, and visual appeal of real 18k and 22k gold.</p>
           </div>
 
-          {/* USP 4 */}
-          <div className="card" style={{ padding: "32px 24px", textAlign: "center", background: "var(--ivory)", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.03)" }}>
-            <div className="order-confirm-icon" style={{ margin: "0 auto 16px", width: "48px", height: "48px", fontSize: "20px" }}>🏷️</div>
-            <h4 style={{ fontFamily: "var(--font-serif)", fontSize: "18px", marginBottom: "8px", color: "var(--charcoal)" }}>Accessible Luxury</h4>
-            <p style={{ fontSize: "13.5px", color: "var(--grey)", lineHeight: "1.6", margin: 0 }}>
-              High-end aesthetic designs curated at a price point that doesn't make you think twice.
-            </p>
+          <div className="usp-card">
+            <div className="usp-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4"><path d="M20.6 12.4 12.4 20.6a2 2 0 0 1-2.8 0l-6.2-6.2a2 2 0 0 1 0-2.8L11.6 3.4a2 2 0 0 1 1.4-.6H19a2 2 0 0 1 2 2v5.2a2 2 0 0 1-.4 1.8Z"/><circle cx="15.5" cy="7.5" r="1.2"/></svg>
+            </div>
+            <h4>Accessible Luxury</h4>
+            <p>High-end aesthetic designs curated at a price point that doesn't make you think twice.</p>
           </div>
         </div>
       </section>
 
-      {/* Call To Action */}
-      <section className="section" style={{ textAlign: "center", padding: "var(--sp-7) var(--sp-4)" }}>
-        <h2 style={{ fontSize: "32px", marginBottom: "16px" }}>Ready to elevate your everyday?</h2>
-        <p style={{ fontSize: "15px", color: "var(--grey)", marginBottom: "32px", maxWidth: "500px", margin: "0 auto 32px" }}>
-          Explore our latest collection of earrings, rings, necklaces, and bangles designed for you.
-        </p>
+      <section className="about-cta">
+        <h2>Ready to elevate your everyday?</h2>
+        <p>Explore our latest collection of earrings, rings, necklaces, and bangles designed for you.</p>
         <Link to="/shop" className="btn-gold">Explore Collection</Link>
       </section>
     </>
