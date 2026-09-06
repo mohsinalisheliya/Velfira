@@ -9,22 +9,33 @@ class User(AbstractUser):
 
 class Address(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="addresses")
-    full_name = models.CharField(max_length=150, default="")
-    mobile_number = models.CharField(max_length=15, default="")
-    pincode = models.CharField(max_length=10)
+    full_name = models.CharField(max_length=150, blank=True)
+    mobile_number = models.CharField(max_length=15, blank=True)
     flat = models.CharField(max_length=255, default="")
     area = models.CharField(max_length=255, default="")
-    landmark = models.CharField(max_length=255, blank=True, default="")
+    landmark = models.CharField(max_length=255, blank=True)
     city = models.CharField(max_length=100)
     state = models.CharField(max_length=100)
+    pincode = models.CharField(max_length=10)
     is_default = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = "Addresses"
 
     def __str__(self):
-        return f"{self.full_name} - {self.city} - {self.pincode}"
+        return f"{self.flat}, {self.city} - {self.pincode}"
 
+    @property
+    def line1(self):
+        return self.flat
+
+    @property
+    def line2(self):
+        parts = [self.area]
+        if self.landmark:
+            parts.append(f"Near {self.landmark}")
+        return ", ".join(p for p in parts if p)
+    
 class OTPVerification(models.Model):
     mobile_number = models.CharField(max_length=15, db_index=True)
     otp_hash = models.CharField(max_length=128)
