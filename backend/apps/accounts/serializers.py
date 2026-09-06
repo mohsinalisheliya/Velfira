@@ -21,4 +21,4 @@ class CustomerSerializer(serializers.ModelSerializer):
 class AddressSerializer(serializers.ModelSerializer):
     class Meta:
         model = Address
-        fields = ["id", "full_name", "mobile_number", "pincode", "flat", "area", "landmark", "city", "state", "is_default"]
+        fields = ["id", "full_name", "mobile_number", "flat", "area", "landmark", "city", "state", "pincode", "is_default"]
