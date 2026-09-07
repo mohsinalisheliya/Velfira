@@ -35,7 +35,7 @@ export default function Navbar() {
 
       <div className="topbar">
         <Link to="/" className="topbar-logo">
-          <img src="/logo-full.png" alt="Velfira" />
+          <img src="" alt="Velfira" />
         </Link>
 
         <div className="searchbar">
