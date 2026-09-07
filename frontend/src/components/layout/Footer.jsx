@@ -3,7 +3,7 @@ export default function Footer() {
     <footer>
       <div className="foot-grid">
         <div>
-          <img src="/logo-full.png" alt="Velfira" />
+          <img src="/logo-full.svg" alt="Velfira" />
           <p>Luxury without limits — affordable, anti-tarnish fashion jewellery, designed and shipped across India.</p>
         </div>
         <div className="foot-col">
