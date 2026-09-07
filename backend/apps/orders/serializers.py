@@ -10,12 +10,21 @@ class AddressSerializer(serializers.ModelSerializer):
         
 
 class OrderItemSerializer(serializers.ModelSerializer):
+    product_id = serializers.IntegerField(source="product.id")
     product_name = serializers.CharField(source="product.name")
+    product_slug = serializers.CharField(source="product.slug")
+    product_image = serializers.SerializerMethodField()
 
     class Meta:
         model = OrderItem
-        fields = ["id", "product_name", "quantity", "unit_price", "gst_rate_snapshot"]
+        fields = ["id", "product_id", "product_name", "product_slug", "product_image", "quantity", "unit_price", "gst_rate_snapshot"]
 
+    def get_product_image(self, obj):
+        first = obj.product.images.first()
+        if first:
+            request = self.context.get("request")
+            return request.build_absolute_uri(first.image.url) if request else first.image.url
+        return None
 
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
