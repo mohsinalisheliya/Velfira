@@ -378,3 +378,24 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
   .order-item-actions{grid-column:1/-1; flex-direction:row;}
   .order-action-btn{flex:1;}
 }
+
+.account-dropdown-wrap{position:relative;}
+.account-dropdown{
+  position:absolute; top:calc(100% + 10px); right:0; background:var(--ivory);
+  border:1px solid var(--grey-line); box-shadow:0 8px 24px rgba(0,0,0,.08);
+  min-width:190px; z-index:60; display:flex; flex-direction:column;
+}
+.account-dropdown-greeting{padding:12px 16px; font-size:12.5px; font-weight:600; border-bottom:1px solid var(--grey-line); color:var(--charcoal-soft);}
+.account-dropdown a, .account-dropdown button{
+  padding:12px 16px; font-size:13.5px; text-align:left; background:none; border:none; cursor:pointer; color:var(--charcoal);
+}
+.account-dropdown a:hover, .account-dropdown button:hover{background:var(--sand); color:var(--gold);}
+
+.mobile-panel-logout{
+  margin-top:auto; padding:12px 0; font-size:15px; color:#B23A3A; background:none; border:none;
+  text-align:left; border-top:1px solid var(--grey-line); cursor:pointer;
+}
+
+@media(max-width:640px){
+  .account-dropdown{right:-16px; min-width:170px;}
+}
