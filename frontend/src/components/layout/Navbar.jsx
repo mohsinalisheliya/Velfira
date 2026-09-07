@@ -1,10 +1,31 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useRef, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const { cart } = useCart();
+  const { isLoggedIn, user, logout } = useAuth();
+  const navigate = useNavigate();
+  const accountRef = useRef(null);
+
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (accountRef.current && !accountRef.current.contains(e.target)) {
+        setAccountOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogout = () => {
+    logout();
+    setAccountOpen(false);
+    navigate("/");
+  };
 
   return (
     <>
@@ -26,13 +47,34 @@ export default function Navbar() {
         </div>
 
         <div className="topbar-icons">
-          <Link to="/account" className="icon-btn" aria-label="Account">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <circle cx="12" cy="8" r="4" />
-              <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
-            </svg>
-            <span className="icon-label">Account</span>
-          </Link>
+          <div className="account-dropdown-wrap" ref={accountRef}>
+            <button className="icon-btn" onClick={() => setAccountOpen((o) => !o)} aria-label="Account menu">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+                <circle cx="12" cy="8" r="4" />
+                <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+              </svg>
+              <span className="icon-label">Account</span>
+            </button>
+
+            {accountOpen && (
+              <div className="account-dropdown">
+                {isLoggedIn ? (
+                  <>
+                    <div className="account-dropdown-greeting">Hi, {user?.first_name || user?.mobile_number}</div>
+                    <Link to="/account/orders" onClick={() => setAccountOpen(false)}>My Orders</Link>
+                    <Link to="/account" onClick={() => setAccountOpen(false)}>My Profile</Link>
+                    <button onClick={handleLogout}>Logout</button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/account" onClick={() => setAccountOpen(false)}>Login / Sign Up</Link>
+                    <Link to="/account/orders" onClick={() => setAccountOpen(false)}>Track an Order</Link>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
           <Link to="/cart" className="icon-btn" aria-label={`Cart, ${cart.item_count} items`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
               <path d="M6 8h12l-1.2 11a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8Z" />
@@ -68,7 +110,13 @@ export default function Navbar() {
         <Link to="/gifting" onClick={() => setMenuOpen(false)}>Gifting</Link>
         <Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link>
         <Link to="/account" onClick={() => setMenuOpen(false)}>My Account</Link>
+        <Link to="/account/orders" onClick={() => setMenuOpen(false)}>My Orders</Link>
         <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart ({cart.item_count})</Link>
+        {isLoggedIn && (
+          <button className="mobile-panel-logout" onClick={() => { logout(); setMenuOpen(false); navigate("/"); }}>
+            Logout
+          </button>
+        )}
       </div>
     </>
   );
