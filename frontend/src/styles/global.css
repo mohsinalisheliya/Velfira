@@ -399,3 +399,5 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
 @media(max-width:640px){
   .account-dropdown{right:-16px; min-width:170px;}
 }
+
+.mobile-panel-highlight{color:var(--gold); font-weight:600;}
