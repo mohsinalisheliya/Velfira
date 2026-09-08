@@ -1,31 +1,12 @@
-import { useState, useRef, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [accountOpen, setAccountOpen] = useState(false);
   const { cart } = useCart();
-  const { isLoggedIn, user, logout } = useAuth();
-  const navigate = useNavigate();
-  const accountRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (accountRef.current && !accountRef.current.contains(e.target)) {
-        setAccountOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  const handleLogout = () => {
-    logout();
-    setAccountOpen(false);
-    navigate("/");
-  };
+  const { isLoggedIn } = useAuth();
 
   return (
     <>
@@ -35,7 +16,7 @@ export default function Navbar() {
 
       <div className="topbar">
         <Link to="/" className="topbar-logo">
-          <img src="/logo-full.svg" alt="Velfira" />
+          <img src="/logo-full.png" alt="Velfira" />
         </Link>
 
         <div className="searchbar">
@@ -47,33 +28,21 @@ export default function Navbar() {
         </div>
 
         <div className="topbar-icons">
-          <div className="account-dropdown-wrap" ref={accountRef}>
-            <button className="icon-btn" onClick={() => setAccountOpen((o) => !o)} aria-label="Account menu">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-                <circle cx="12" cy="8" r="4" />
-                <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
-              </svg>
-              <span className="icon-label">Account</span>
-            </button>
+          <Link to={isLoggedIn ? "/account/orders" : "/account?next=/account/orders"} className="icon-btn" aria-label="My Orders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <rect x="4" y="7" width="16" height="14" rx="1" />
+              <path d="M8 7V5a4 4 0 0 1 8 0v2" />
+            </svg>
+            <span className="icon-label">Orders</span>
+          </Link>
 
-            {accountOpen && (
-              <div className="account-dropdown">
-                {isLoggedIn ? (
-                  <>
-                    <div className="account-dropdown-greeting">Hi, {user?.first_name || user?.mobile_number}</div>
-                    <Link to="/account/orders" onClick={() => setAccountOpen(false)}>My Orders</Link>
-                    <Link to="/account" onClick={() => setAccountOpen(false)}>My Profile</Link>
-                    <button onClick={handleLogout}>Logout</button>
-                  </>
-                ) : (
-                  <>
-                    <Link to="/account" onClick={() => setAccountOpen(false)}>Login / Sign Up</Link>
-                    <Link to="/account/orders" onClick={() => setAccountOpen(false)}>Track an Order</Link>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+          <Link to="/account" className="icon-btn" aria-label="Account">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+              <circle cx="12" cy="8" r="4" />
+              <path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7" />
+            </svg>
+            <span className="icon-label">Account</span>
+          </Link>
 
           <Link to="/cart" className="icon-btn" aria-label={`Cart, ${cart.item_count} items`}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
@@ -101,6 +70,7 @@ export default function Navbar() {
       <div className={`scrim ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(false)} />
       <div className={`mobile-panel ${menuOpen ? "open" : ""}`}>
         <button className="panel-close" onClick={() => setMenuOpen(false)} aria-label="Close menu">×</button>
+        <Link to="/account/orders" onClick={() => setMenuOpen(false)} className="mobile-panel-highlight">My Orders</Link>
         <Link to="/shop?sort=new" onClick={() => setMenuOpen(false)}>New Arrivals</Link>
         <Link to="/shop?sort=bestseller" onClick={() => setMenuOpen(false)}>Best Sellers</Link>
         <Link to="/shop?category=rings" onClick={() => setMenuOpen(false)}>Rings</Link>
@@ -110,13 +80,7 @@ export default function Navbar() {
         <Link to="/gifting" onClick={() => setMenuOpen(false)}>Gifting</Link>
         <Link to="/about" onClick={() => setMenuOpen(false)}>About Us</Link>
         <Link to="/account" onClick={() => setMenuOpen(false)}>My Account</Link>
-        <Link to="/account/orders" onClick={() => setMenuOpen(false)}>My Orders</Link>
         <Link to="/cart" onClick={() => setMenuOpen(false)}>Cart ({cart.item_count})</Link>
-        {isLoggedIn && (
-          <button className="mobile-panel-logout" onClick={() => { logout(); setMenuOpen(false); navigate("/"); }}>
-            Logout
-          </button>
-        )}
       </div>
     </>
   );
