@@ -45,12 +45,13 @@ export default function Navbar() {
           </Link>
 
           <Link to="/cart" className="icon-btn" aria-label={`Cart, ${cart.item_count} items`}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
-              <path d="M6 8h12l-1.2 11a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8L6 8Z" />
-              <path d="M9 8V6a3 3 0 0 1 6 0v2" />
-            </svg>
-            <span className="badge">{cart.item_count}</span>
-          </Link>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6">
+    <circle cx="9" cy="20" r="1.4" />
+    <circle cx="18" cy="20" r="1.4" />
+    <path d="M2.5 3h2l1.6 10.2a2 2 0 0 0 2 1.8h9a2 2 0 0 0 2-1.6L21 7.5H5.6" />
+  </svg>
+  <span className="badge">{cart.item_count}</span>
+</Link>
         </div>
 
         <button className="hamburger" onClick={() => setMenuOpen(true)} aria-label="Open menu">
