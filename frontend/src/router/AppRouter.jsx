@@ -54,6 +54,7 @@ export default function AppRouter() {
       <Route path="/about" element={<CustomerLayout><About /></CustomerLayout>} />
       <Route path="/contact" element={<CustomerLayout><Contact /></CustomerLayout>} />
       <Route path="/gifting" element={<CustomerLayout><Gifting /></CustomerLayout>} />
+      
       {/* ===== Admin routes — completely separate layout, no customer Navbar/Footer ===== */}
       <Route path="/admin/login" element={<AdminLogin />} />
       <Route path="/admin" element={<AdminRoute><AdminLayout /></AdminRoute>}>
