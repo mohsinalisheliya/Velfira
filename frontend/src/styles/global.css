@@ -409,3 +409,8 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
 .contact-form textarea{width:100%; border:1px solid var(--grey-line); background:var(--sand); padding:12px 14px; font-size:14px; outline:none; font-family:inherit; resize:vertical;}
 .contact-success{color:#2E6B39; font-size:15px;}
 @media(max-width:640px){ .contact-layout{grid-template-columns:1fr; padding:0 20px;} }
+
+.gift-budget-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-3); padding:0 var(--sp-4);}
+.gift-budget-tile{border:1px solid var(--grey-line); text-align:center; padding:var(--sp-4); font-family:var(--font-serif); font-size:17px; transition:border-color .2s;}
+.gift-budget-tile:hover{border-color:var(--gold); color:var(--gold);}
+@media(max-width:640px){ .gift-budget-grid{grid-template-columns:1fr; padding:0 20px;} }
