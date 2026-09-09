@@ -4,7 +4,7 @@ from .views import (
     AdminPublishLayoutView, AdminPageBlockListCreateView, AdminPageBlockDetailView
 )
 
-
+app_name = "page_builder"
 
 urlpatterns = [
     path("pages/<str:page_key>/", PublicPageLayoutView.as_view(), name="page-layout-public"),
