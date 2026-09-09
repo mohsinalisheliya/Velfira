@@ -14,7 +14,7 @@ import OrderHistory from "../pages/OrderHistory";
 import About from "../pages/About";
 import Contact from "../pages/Contact";
 import NotFound from "../pages/NotFound";
-
+import Gifting from "../pages/Gifting";
 
 // Admin pages
 import AdminLogin from "../admin/AdminLogin";
