@@ -402,3 +402,10 @@ footer{background:var(--charcoal); color:#C9C2AE; padding:var(--sp-6) 0 var(--sp
 
 .mobile-panel-highlight{color:var(--gold); font-weight:600;}
 
+.contact-layout{display:grid; grid-template-columns:1fr 1.4fr; gap:var(--sp-6); padding:0 var(--sp-4);}
+.contact-info-block{margin-bottom:var(--sp-4);}
+.contact-info-block h5{font-size:12px; letter-spacing:1px; text-transform:uppercase; color:var(--gold); margin-bottom:8px;}
+.contact-info-block p{font-size:13.5px; color:var(--charcoal-soft); margin-bottom:3px;}
+.contact-form textarea{width:100%; border:1px solid var(--grey-line); background:var(--sand); padding:12px 14px; font-size:14px; outline:none; font-family:inherit; resize:vertical;}
+.contact-success{color:#2E6B39; font-size:15px;}
+@media(max-width:640px){ .contact-layout{grid-template-columns:1fr; padding:0 20px;} }
