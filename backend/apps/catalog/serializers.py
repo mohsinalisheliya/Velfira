@@ -14,6 +14,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
         fields = ["id", "image", "sort_order"]
 
 
+class ProductVideoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProductVideo
+        fields = ["id", "video", "sort_order"]
+        
 class ProductVariantSerializer(serializers.ModelSerializer):
     effective_price = serializers.SerializerMethodField()
 
