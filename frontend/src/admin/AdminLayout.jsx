@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 
 const NAV_ITEMS = [
@@ -12,6 +13,7 @@ const NAV_ITEMS = [
 
 export default function AdminLayout() {
   const navigate = useNavigate();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const username = localStorage.getItem("velfira_admin_username");
 
   const handleLogout = () => {
@@ -23,11 +25,12 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-shell">
-      <aside className="admin-sidebar">
+      <div className={`admin-scrim ${sidebarOpen ? "open" : ""}`} onClick={() => setSidebarOpen(false)} />
+      <aside className={`admin-sidebar ${sidebarOpen ? "open" : ""}`}>
         <img src="/logo-v.png" alt="Velfira" className="admin-sidebar-logo" />
         <nav>
           {NAV_ITEMS.map((item) => (
-            <NavLink key={item.to} to={item.to} end={item.end} className={({ isActive }) => `admin-nav-link ${isActive ? "active" : ""}`}>
+            <NavLink key={item.to} to={item.to} end={item.end} onClick={() => setSidebarOpen(false)} className={({ isActive }) => `admin-nav-link ${isActive ? "active" : ""}`}>
               {item.label}
             </NavLink>
           ))}
@@ -36,6 +39,7 @@ export default function AdminLayout() {
       </aside>
       <main className="admin-main">
         <div className="admin-topbar">
+          <button className="admin-hamburger" onClick={() => setSidebarOpen(true)} aria-label="Open menu">☰</button>
           <span>Hi, {username}</span>
         </div>
         <div className="admin-content">
