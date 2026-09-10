@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { getAdminProduct, createProduct, updateProduct, listAdminCategories } from "../../api/adminProducts";
-
-const [existingImages, setExistingImages] = useState([]);
-const [existingVideos, setExistingVideos] = useState([]);
-const [newImages, setNewImages] = useState([]);
-const [newVideos, setNewVideos] = useState([]);
-const [uploading, setUploading] = useState(false);
+import {
+  getAdminProduct,
+  createProduct,
+  updateProduct,
+  listAdminCategories,
+  uploadProductMedia,
+  deleteProductImage,
+  deleteProductVideo,
+} from "../../api/adminProducts";
 
 const GST_RATES = [3, 5, 12, 18];
 
@@ -16,6 +18,11 @@ export default function ProductForm() {
   const navigate = useNavigate();
 
   const [categories, setCategories] = useState([]);
+  const [existingImages, setExistingImages] = useState([]);
+  const [existingVideos, setExistingVideos] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [newVideos, setNewVideos] = useState([]);
+  const [uploading, setUploading] = useState(false);
   const [form, setForm] = useState({
     name: "", slug: "", category: "", description: "", price: "",
     hsn_code: "", gst_rate: 3, stock_qty: 0, is_active: true, is_bestseller: false,
@@ -28,6 +35,8 @@ export default function ProductForm() {
     if (isEdit) {
       getAdminProduct(id).then((res) => {
         const p = res.data;
+        setExistingImages(p.images || []);
+        setExistingVideos(p.videos || []);
         setForm({
           name: p.name, slug: p.slug, category: p.category?.id || "", description: p.description || "",
           price: p.price, hsn_code: p.hsn_code, gst_rate: p.gst_rate, stock_qty: p.stock_qty,
