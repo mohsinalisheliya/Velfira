@@ -63,3 +63,28 @@ class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = ProductDetailSerializer
     permission_classes = [IsAdminUser]
 
+from rest_framework.parsers import MultiPartParser, FormParser
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+from .models import ProductImage, ProductVideo
+
+
+class AdminProductMediaUploadView(APIView):
+    permission_classes = [IsAdminUser]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, product_id):
+        product = get_object_or_404(Product, id=product_id)
+        images = request.FILES.getlist("images")
+        videos = request.FILES.getlist("videos")
+        for i, img in enumerate(images):
+            ProductImage.objects.create(product=product, image=img, sort_order=i)
+        for i, vid in enumerate(videos):
+            ProductVideo.objects.create(product=product, video=vid, sort_order=i)
+        return Response({"detail": f"{len(images)} images, {len(videos)} videos uploaded."})
+
+    def delete(self, request, product_id):
+        ProductImage.objects.filter(id=request.data.get("image_id")).delete()
+        ProductVideo.objects.filter(id=request.data.get("video_id")).delete()
+        return Response({"detail": "Deleted."})
