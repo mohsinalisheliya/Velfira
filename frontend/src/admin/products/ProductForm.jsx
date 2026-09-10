@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { getAdminProduct, createProduct, updateProduct, listAdminCategories } from "../../api/adminProducts";
 
+const [existingImages, setExistingImages] = useState([]);
+const [existingVideos, setExistingVideos] = useState([]);
+const [newImages, setNewImages] = useState([]);
+const [newVideos, setNewVideos] = useState([]);
+const [uploading, setUploading] = useState(false);
+
 const GST_RATES = [3, 5, 12, 18];
 
 export default function ProductForm() {
