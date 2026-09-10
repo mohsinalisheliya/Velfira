@@ -56,8 +56,12 @@ export default function ProductForm() {
     setSaving(true);
     try {
       const payload = { ...form, category: Number(form.category) };
+      let savedId = id;
       if (isEdit) await updateProduct(id, payload);
-      else await createProduct(payload);
+      else savedId = (await createProduct(payload)).data.id;
+      if (newImages.length || newVideos.length) {
+        await uploadProductMedia(savedId, newImages, newVideos);
+      }
       navigate("/admin/products");
     } catch (err) {
       setError(JSON.stringify(err.response?.data) || "Failed to save.");
@@ -113,6 +117,50 @@ export default function ProductForm() {
           <label><input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} /> Active</label>
           <label><input type="checkbox" checked={form.is_bestseller} onChange={(e) => update("is_bestseller", e.target.checked)} /> Bestseller</label>
         </div>
+        {isEdit && (
+          <div className="admin-form-row">
+            <label>Existing Images</label>
+            <div className="admin-media-grid">
+              {existingImages.map((img) => (
+                <div key={img.id} className="admin-media-thumb">
+                  <img src={img.image} alt="" />
+                  <button type="button" onClick={async () => { await deleteProductImage(id, img.id); setExistingImages(existingImages.filter((i) => i.id !== img.id)); }}>×</button>
+                </div>
+              ))}
+            </div>
+
+            <label>Existing Videos</label>
+            <div className="admin-media-grid">
+              {existingVideos.map((v) => (
+                <div key={v.id} className="admin-media-thumb">
+                  <video src={v.video} muted />
+                  <button type="button" onClick={async () => { await deleteProductVideo(id, v.id); setExistingVideos(existingVideos.filter((x) => x.id !== v.id)); }}>×</button>
+                </div>
+              ))}
+            </div>
+
+            <label>Add New Images</label>
+            <input type="file" accept="image/*" multiple onChange={(e) => setNewImages([...e.target.files])} />
+            <label>Add New Videos</label>
+            <input type="file" accept="video/*" multiple onChange={(e) => setNewVideos([...e.target.files])} />
+            <button
+              type="button"
+              className="admin-btn-primary"
+              disabled={uploading}
+              onClick={async () => {
+                setUploading(true);
+                try {
+                  await uploadProductMedia(id, newImages, newVideos);
+                  location.reload();
+                } finally {
+                  setUploading(false);
+                }
+              }}
+            >
+              {uploading ? "Uploading…" : "Upload Media"}
+            </button>
+          </div>
+        )}
         {error && <p className="otp-error">{error}</p>}
         <button className="admin-btn-primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save Product"}</button>
       </form>
