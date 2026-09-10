@@ -19,7 +19,7 @@ while true; do
         
         echo "[$TIME_STAMP] ✅ Successfully synced with GitHub!"
     else
-        echo "[$(date +"%I:%M:%p")] 💤 Koi naya change nahi mila, skipping..."
+        echo "[$(date +"%I:%M:%S %p")] 💤 Koi naya change nahi mila, skipping..."
     fi
 
     # 2 minute (120 seconds) wait
