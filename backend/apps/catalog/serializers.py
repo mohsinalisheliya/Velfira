@@ -62,6 +62,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 class ProductDetailSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
     images = ProductImageSerializer(many=True, read_only=True)
+    videos = ProductVideoSerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     related_products = serializers.SerializerMethodField()
     price_with_gst = serializers.SerializerMethodField()
