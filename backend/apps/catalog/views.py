@@ -1,5 +1,5 @@
 from rest_framework import generics, filters
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAdminUser
 from django_filters.rest_framework import DjangoFilterBackend
 from .models import Category, Product
 from .serializers import CategorySerializer, ProductListSerializer, ProductDetailSerializer
@@ -50,3 +50,15 @@ class ProductDetailView(generics.RetrieveAPIView):
     queryset = Product.objects.filter(is_active=True).select_related("category").prefetch_related(
         "images", "variants", "related_from__related_product"
     )
+
+
+class AdminProductListCreateView(generics.ListCreateAPIView):
+    queryset = Product.objects.all().select_related("category")
+    serializer_class = ProductDetailSerializer
+    permission_classes = [IsAdminUser]
+
+
+class AdminProductDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Product.objects.all()
+    serializer_class = ProductDetailSerializer
+    permission_classes = [IsAdminUser]
