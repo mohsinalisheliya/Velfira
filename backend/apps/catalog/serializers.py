@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Category, Product, ProductImage, ProductVariant, RelatedProduct
+from .models import *
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -18,7 +18,7 @@ class ProductVideoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductVideo
         fields = ["id", "video", "sort_order"]
-        
+
 class ProductVariantSerializer(serializers.ModelSerializer):
     effective_price = serializers.SerializerMethodField()
 
