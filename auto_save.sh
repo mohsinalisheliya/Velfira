@@ -23,5 +23,5 @@ while true; do
     fi
 
     # 2 minute (120 seconds) wait
-    sleep 0p
+    sleep 05
 done
