@@ -8,7 +8,7 @@ echo "----------------------------------------------------"
 while true; do
     # Check karo agar repo mein koi changes hain
     if [[ -n $(git status --porcelain) ]]; then
-        TIME_STAMP=$(date +"%d-%b-%Y %I:%M %p")
+        TIME_STAMP=$(date +"%d-%b-%Y %I:%M:%S %p")
         echo "[$TIME_STAMP] 📝 Changes detect huye! Git add aur commit ho raha hai..."
         
         git add .
