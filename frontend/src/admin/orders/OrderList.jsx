@@ -8,8 +8,9 @@ export default function OrderList() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
 
-  const load = () => listAdminOrders().then((res) => setOrders(res.data)).catch(console.error).finally(() => setLoading(false));
-  useEffect(load, []);
+  useEffect(() => {
+  listAdminOrders().then((res) => setOrders(res.data)).catch(console.error).finally(() => setLoading(false));
+``}, []);
 
   const handleStatusChange = async (id, status) => {
     await updateOrderStatus(id, status);
