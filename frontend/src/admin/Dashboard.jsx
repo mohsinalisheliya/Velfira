@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { getSalesSummary, getTopProducts, getLowStock, getRecentOrders, getRevenueTrend } from "../api/admin";
 
 export default function Dashboard() {
@@ -48,20 +47,7 @@ export default function Dashboard() {
 
       <div className="admin-panel">
         <h3>Revenue — Last 30 Days</h3>
-        {trend.length > 0 && (
-          <div style={{ width: "100%", height: 260 }}>
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={trend}>
-                <CartesianGrid stroke="#F0F1F3" vertical={false} />
-                <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fontSize: 11, fill: "#9CA3AF" }} axisLine={false} tickLine={false} />
-                <Tooltip formatter={(v) => `₹${v.toLocaleString("en-IN")}`} />
-                <Line type="monotone" dataKey="revenue" stroke="#B08D3E" strokeWidth={2.5} dot={false} />
-              </LineChart>
-            </ResponsiveContainer>
-          </div>
-        )}
-        {trend.length === 0 && <p className="admin-empty-note">No revenue data yet.</p>}
+        <p className="admin-empty-note">Chart temporarily disabled for debugging. {trend.length} data points loaded.</p>
       </div>
 
       <div className="admin-two-col">
