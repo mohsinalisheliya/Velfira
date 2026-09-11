@@ -29,13 +29,14 @@ class OrderItemSerializer(serializers.ModelSerializer):
 class OrderSerializer(serializers.ModelSerializer):
     items = OrderItemSerializer(many=True, read_only=True)
     address = AddressSerializer(read_only=True)
+    user_mobile = serializers.CharField(source="user.mobile_number", read_only=True)
 
     class Meta:
         model = Order
         fields = [
             "id", "status", "payment_status",
             "subtotal", "gst_amount", "discount_amount", "total",
-            "address", "items", "created_at"
+            "address", "items", "created_at", "user_mobile"
         ]
 
 
