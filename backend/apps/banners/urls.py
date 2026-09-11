@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ActiveBannerListView, AdminBannerListCreateView, AdminBannerDetailView
+from .views import *
 
 app_name = "banners"
 urlpatterns = [
