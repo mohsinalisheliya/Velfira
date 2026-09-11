@@ -34,3 +34,18 @@ class AdminBannerDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Banner.objects.all()
     serializer_class = BannerSerializer
     permission_classes = [IsAdminUser]
+
+from rest_framework import generics
+from rest_framework.permissions import IsAdminUser
+from .models import Banner
+from .serializers import BannerSerializer
+
+class AdminBannerListCreateView(generics.ListCreateAPIView):
+    queryset = Banner.objects.all().order_by("-id")
+    serializer_class = BannerSerializer
+    permission_classes = [IsAdminUser]
+
+class AdminBannerDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Banner.objects.all()
+    serializer_class = BannerSerializer
+    permission_classes = [IsAdminUser]
