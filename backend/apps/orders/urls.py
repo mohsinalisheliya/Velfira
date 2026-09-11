@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import AdminOrderDetailView, AdminOrderListView, CheckoutView, OrderListView, OrderDetailView
+from .views importAdminOrderListView,  *
 
 app_name = "orders"
 
