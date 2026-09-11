@@ -10,7 +10,7 @@ export default function OrderList() {
 
   useEffect(() => {
   listAdminOrders().then((res) => setOrders(res.data)).catch(console.error).finally(() => setLoading(false));
-``}, []);
+}, []);
 
   const handleStatusChange = async (id, status) => {
     await updateOrderStatus(id, status);
