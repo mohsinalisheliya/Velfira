@@ -97,3 +97,8 @@
   .admin-form-grid{grid-template-columns:1fr 1fr;}
   .admin-page-header{flex-direction:column; align-items:flex-start; gap:10px;}
 }
+
+.admin-filter-tabs{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:16px;}
+.admin-filter-tab{border:1px solid #E5E7EB; background:#fff; padding:7px 14px; border-radius:20px; font-size:12px; cursor:pointer; text-transform:capitalize;}
+.admin-filter-tab.active{background:#111827; color:#fff; border-color:#111827;}
+.admin-status-select{border:1px solid #E5E7EB; border-radius:6px; padding:5px 8px; font-size:12px; text-transform:capitalize;}
