@@ -1,7 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from django.shortcuts import get_object_or_404
 
 from .models import Order
@@ -62,7 +62,7 @@ class OrderDetailView(generics.RetrieveAPIView):
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
 
-from rest_framework.permissions import IsAdminUser
+
 
 class AdminOrderListView(generics.ListAPIView):
     queryset = Order.objects.select_related("user", "address").prefetch_related("items").order_by("-created_at")
