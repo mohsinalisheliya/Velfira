@@ -28,3 +28,18 @@ class ApplyCouponView(APIView):
             "discount_amount": discount,
             "message": message,
         })
+
+from rest_framework import generics
+from rest_framework.permissions import IsAdminUser
+from .models import Coupon
+from .serializers import CouponSerializer
+
+class AdminCouponListCreateView(generics.ListCreateAPIView):
+    queryset = Coupon.objects.all().order_by("-id")
+    serializer_class = CouponSerializer
+    permission_classes = [IsAdminUser]
+
+class AdminCouponDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Coupon.objects.all()
+    serializer_class = CouponSerializer
+    permission_classes = [IsAdminUser]
