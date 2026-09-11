@@ -9,13 +9,16 @@ const axiosClient = axios.create({
 
 // Attach access token to every request
 axiosClient.interceptors.request.use((config) => {
-  const isAdminRoute = config.url?.includes("/admin/") || config.url?.includes("/admin-login");
   const adminToken = localStorage.getItem("velfira_admin_access");
   const customerToken = localStorage.getItem("velfira_access");
+  const isAdminRoute = config.url && config.url.indexOf("/admin") !== -1;
   const token = isAdminRoute && adminToken ? adminToken : customerToken;
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
   return config;
 });
+
 
 // On 401, try refreshing the token once, then retry the original request
 let isRefreshing = false;
