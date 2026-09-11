@@ -61,3 +61,16 @@ class OrderDetailView(generics.RetrieveAPIView):
 
     def get_queryset(self):
         return Order.objects.filter(user=self.request.user)
+
+from rest_framework.permissions import IsAdminUser
+
+class AdminOrderListView(generics.ListAPIView):
+    queryset = Order.objects.select_related("user", "address").prefetch_related("items").order_by("-created_at")
+    serializer_class = OrderSerializer
+    permission_classes = [IsAdminUser]
+
+
+class AdminOrderDetailView(generics.RetrieveUpdateAPIView):
+    queryset = Order.objects.select_related("user", "address").prefetch_related("items")
+    serializer_class = OrderSerializer
+    permission_classes = [IsAdminUser]
