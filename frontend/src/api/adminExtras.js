@@ -13,3 +13,4 @@ export const updateBanner = (id, data) => axiosClient.patch(`/admin/banners/${id
 export const deleteBanner = (id) => axiosClient.delete(`/admin/banners/${id}/`);
 
 export const listLogs = (params = {}) => axiosClient.get("/admin/logs/", { params });
+
