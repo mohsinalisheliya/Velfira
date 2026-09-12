@@ -13,6 +13,7 @@ from .models import User, Address
 from .otp import send_otp, verify_otp
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSerializer, AddressSerializer
 
+
 class SendOTPView(APIView):
     permission_classes = []
     def post(self, request):
