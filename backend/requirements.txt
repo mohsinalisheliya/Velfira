@@ -1,1 +1,1 @@
-pip install django-ratelimit
+django-ratelimit
