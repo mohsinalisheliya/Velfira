@@ -5,9 +5,7 @@ env/
 
 
 *.pyc
-__pycache__/
-media/
-db.sqlite3
+
 
 # Python
 __pycache__/
