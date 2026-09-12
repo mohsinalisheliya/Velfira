@@ -79,6 +79,9 @@ class VerifyOTPView(APIView):
             "created": action == "signup",
         })
 
+@method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True), name='post')
+class AdminLoginView(APIView):
+    ...
 class AdminLoginView(APIView):
     permission_classes = []
     def post(self, request):
