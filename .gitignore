@@ -3,6 +3,13 @@ venv/
 env/
 .env
 
+.env
+venv/
+*.pyc
+__pycache__/
+media/
+db.sqlite3
+
 # Python
 __pycache__/
 *.py[cod]
