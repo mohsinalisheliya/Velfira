@@ -37,8 +37,6 @@ class SendOTPView(APIView):
 
 @method_decorator(ratelimit(key='ip', rate='10/h', method='POST', block=True), name='post')
 class VerifyOTPView(APIView):
-    ...
-class VerifyOTPView(APIView):
     permission_classes = []
     def post(self, request):
         serializer = VerifyOTPSerializer(data=request.data)
