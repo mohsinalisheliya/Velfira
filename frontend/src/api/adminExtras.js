@@ -14,3 +14,7 @@ export const deleteBanner = (id) => axiosClient.delete(`/admin/banners/${id}/`);
 
 export const listLogs = (params = {}) => axiosClient.get("/admin/logs/", { params });
 
+export const listThemesAdmin = () => axiosClient.get("/admin/themes/");
+export const createTheme = (data) => axiosClient.post("/admin/themes/", data);
+export const activateTheme = (id) => axiosClient.post(`/admin/themes/${id}/activate/`);
+export const deleteTheme = (id) => axiosClient.delete(`/admin/themes/${id}/`);
