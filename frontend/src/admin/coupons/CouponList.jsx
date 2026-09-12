@@ -9,13 +9,18 @@ export default function CouponList() {
   const load = () => listCoupons().then((res) => setCoupons(res.data)).catch(console.error);
   useEffect(() => { load(); }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
     await createCoupon(form);
     setShowForm(false);
     setForm({ code: "", discount_type: "percent", value: "", min_order_value: 0, valid_from: "", valid_to: "", usage_limit: 0, is_active: true });
     load();
-  };
+  } catch (err) {
+    alert(JSON.stringify(err.response?.data));
+    console.error(err.response?.data);
+  }
+};
 
   const handleDelete = async (id) => {
     if (!confirm("Delete coupon?")) return;
