@@ -6,6 +6,9 @@ from django.utils.crypto import get_random_string
 from django.contrib.auth import authenticate
 from rest_framework.permissions import IsAuthenticated
 
+from django_ratelimit.decorators import ratelimit
+from django.utils.decorators import method_decorator
+
 from .models import User, Address
 from .otp import send_otp, verify_otp
 from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSerializer, AddressSerializer
