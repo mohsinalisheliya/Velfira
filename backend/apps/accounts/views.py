@@ -34,6 +34,10 @@ class SendOTPView(APIView):
         send_otp(mobile_number)
         return Response({"detail": "OTP sent."}, status=status.HTTP_200_OK)
 
+
+@method_decorator(ratelimit(key='ip', rate='10/h', method='POST', block=True), name='post')
+class VerifyOTPView(APIView):
+    ...
 class VerifyOTPView(APIView):
     permission_classes = []
     def post(self, request):
