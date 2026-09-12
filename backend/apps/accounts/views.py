@@ -81,8 +81,6 @@ class VerifyOTPView(APIView):
 
 @method_decorator(ratelimit(key='ip', rate='5/m', method='POST', block=True), name='post')
 class AdminLoginView(APIView):
-    ...
-class AdminLoginView(APIView):
     permission_classes = []
     def post(self, request):
         user = authenticate(request, username=request.data.get("username"), password=request.data.get("password"))
