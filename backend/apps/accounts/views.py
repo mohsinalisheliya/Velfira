@@ -16,7 +16,6 @@ from .serializers import SendOTPSerializer, VerifyOTPSerializer, CustomerSeriali
 
 @method_decorator(ratelimit(key='ip', rate='5/h', method='POST', block=True), name='post')
 class SendOTPView(APIView):
-class SendOTPView(APIView):
     permission_classes = []
     def post(self, request):
         serializer = SendOTPSerializer(data=request.data)
