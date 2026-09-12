@@ -6,8 +6,9 @@ export const updateCoupon = (id, data) => axiosClient.patch(`/admin/coupons/${id
 export const deleteCoupon = (id) => axiosClient.delete(`/admin/coupons/${id}/`);
 
 export const listBannersAdmin = () => axiosClient.get("/admin/banners/");
-
-
+export const createBanner = (data) => axiosClient.post("/admin/banners/", data, {
+  headers: { "Content-Type": "multipart/form-data" },
+});
 export const updateBanner = (id, data) => axiosClient.patch(`/admin/banners/${id}/`, data);
 export const deleteBanner = (id) => axiosClient.delete(`/admin/banners/${id}/`);
 
