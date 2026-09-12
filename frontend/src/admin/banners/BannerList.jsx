@@ -10,8 +10,9 @@ export default function BannerList() {
   const load = () => listBannersAdmin().then((res) => setBanners(res.data)).catch(console.error);
   useEffect(() => { load(); }, []);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
     const fd = new FormData();
     Object.entries(form).forEach(([k, v]) => fd.append(k, v));
     if (file) fd.append("image", file);
@@ -19,7 +20,11 @@ export default function BannerList() {
     setShowForm(false);
     setFile(null);
     load();
-  };
+  } catch (err) {
+    alert(JSON.stringify(err.response?.data));
+    console.error(err.response?.data);
+  }
+};
 
   const toggleActive = async (b) => { await updateBanner(b.id, { is_active: !b.is_active }); load(); };
   const handleDelete = async (id) => { if (!confirm("Delete banner?")) return; await deleteBanner(id); load(); };
