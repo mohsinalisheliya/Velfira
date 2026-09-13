@@ -65,7 +65,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     videos = ProductVideoSerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
     related_products = serializers.SerializerMethodField()
-    price_with_gst = serializers.SerializerMethodField()
+   
     gst_rate = serializers.DecimalField(max_digits=4, decimal_places=2)
     class Meta:
         model = Product
