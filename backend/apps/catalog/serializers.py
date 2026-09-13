@@ -60,7 +60,7 @@ class ProductListSerializer(serializers.ModelSerializer):
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
-    category = CategorySerializer(read_only=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all())
     images = ProductImageSerializer(many=True, read_only=True)
     videos = ProductVideoSerializer(many=True, read_only=True)
     variants = ProductVariantSerializer(many=True, read_only=True)
@@ -76,6 +76,11 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     ]
     def get_price_with_gst(self, obj):
         return round(float(obj.price) * (1 + float(obj.gst_rate) / 100), 2)
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data["category"] = CategorySerializer(instance.category, context=self.context).data
+        return data
 
     def get_related_products(self, obj):
         # admin-curated first
