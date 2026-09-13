@@ -73,7 +73,7 @@ class ProductDetailSerializer(serializers.ModelSerializer):
     "id", "name", "slug", "category", "description",
     "price", "gst_rate", "price_with_gst", "hsn_code",
     "stock_qty", "is_active", "images", "variants", "related_products", "videos"
-]
+    ]
     def get_price_with_gst(self, obj):
         return round(float(obj.price) * (1 + float(obj.gst_rate) / 100), 2)
 
