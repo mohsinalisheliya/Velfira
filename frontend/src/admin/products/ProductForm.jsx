@@ -56,7 +56,6 @@ export default function ProductForm() {
     setSaving(true);
     try {
       const payload = { ...form, category: Number(form.category), price: String(form.price), gst_rate: String(form.gst_rate) };
-      let savedId = id;
       if (isEdit) await updateProduct(id, payload);
       else savedId = (await createProduct(payload)).data.id;
       if (newImages.length || newVideos.length) {
