@@ -56,6 +56,7 @@ export default function ProductForm() {
     setSaving(true);
     try {
       const payload = { ...form, category: Number(form.category), price: String(form.price), gst_rate: String(form.gst_rate) };
+      let savedId = id;
       if (isEdit) await updateProduct(id, payload);
       else savedId = (await createProduct(payload)).data.id;
       if (newImages.length || newVideos.length) {
@@ -63,7 +64,8 @@ export default function ProductForm() {
       }
       navigate("/admin/products");
     } catch (err) {
-      setError(JSON.stringify(err.response?.data) || "Failed to save.");
+      console.error("Save error:", err.response?.data || err.message);
+      setError(JSON.stringify(err.response?.data || err.message));
     } finally {
       setSaving(false);
     }
