@@ -76,7 +76,10 @@ export default function ProductForm() {
       <form className="admin-panel admin-form" onSubmit={handleSubmit}>
         <div className="admin-form-row">
           <label>Name</label>
-          <input value={form.name}  required />
+          <input value={form.name} onChange={(e) => {
+  const val = e.target.value;
+  setForm((prev) => ({ ...prev, name: val, slug: !isEdit ? autoSlug(val) : prev.slug }));
+}} required />
         </div>
         <div className="admin-form-row">
           <label>Slug</label>
