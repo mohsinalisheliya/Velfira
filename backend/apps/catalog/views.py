@@ -88,3 +88,29 @@ class AdminProductMediaUploadView(APIView):
         ProductImage.objects.filter(id=request.data.get("image_id")).delete()
         ProductVideo.objects.filter(id=request.data.get("video_id")).delete()
         return Response({"detail": "Deleted."})
+
+class AdminVariantListCreateView(generics.ListCreateAPIView):
+    serializer_class = ProductVariantSerializer
+    permission_classes = [IsAdminUser]
+    def get_queryset(self):
+        return ProductVariant.objects.filter(product_id=self.kwargs["product_id"])
+    def perform_create(self, serializer):
+        serializer.save(product_id=self.kwargs["product_id"])
+
+class AdminVariantDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ProductVariant.objects.all()
+    serializer_class = ProductVariantSerializer
+    permission_classes = [IsAdminUser]
+
+class AdminRelatedListCreateView(generics.ListCreateAPIView):
+    serializer_class = RelatedProductSerializer
+    permission_classes = [IsAdminUser]
+    def get_queryset(self):
+        return RelatedProduct.objects.filter(product_id=self.kwargs["product_id"])
+    def perform_create(self, serializer):
+        serializer.save(product_id=self.kwargs["product_id"])
+
+class AdminRelatedDetailView(generics.RetrieveDestroyAPIView):
+    queryset = RelatedProduct.objects.all()
+    serializer_class = RelatedProductSerializer
+    permission_classes = [IsAdminUser]
