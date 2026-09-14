@@ -19,3 +19,4 @@ export const deleteProductImage = (productId, imageId) =>
   axiosClient.delete(`/admin/products/${productId}/media/`, { data: { image_id: imageId } });
 export const deleteProductVideo = (productId, videoId) =>
   axiosClient.delete(`/admin/products/${productId}/media/`, { data: { video_id: videoId } });
+
