@@ -5,6 +5,7 @@ from .models import *
 from .serializers import *
 
 
+
 class CategoryListView(generics.ListAPIView):
     serializer_class = CategorySerializer
     permission_classes = [AllowAny]
