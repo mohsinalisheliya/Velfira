@@ -89,7 +89,7 @@ class AdminProductMediaUploadView(APIView):
         ProductVideo.objects.filter(id=request.data.get("video_id")).delete()
         return Response({"detail": "Deleted."})
 
-class AdminVariantListCreateView(generics.ListCreateAPIView):
+    class AdminVariantListCreateView(generics.ListCreateAPIView):
     serializer_class = ProductVariantSerializer
     permission_classes = [IsAdminUser]
     def get_queryset(self):
