@@ -8,4 +8,5 @@ urlpatterns = [
     path("admin/products/", AdminProductListCreateView.as_view(), name="admin-product-list"),
     path("admin/products/<int:pk>/", AdminProductDetailView.as_view(), name="admin-product-detail"),
     path("admin/products/<int:product_id>/media/", AdminProductMediaUploadView.as_view(), name="admin-product-media"),
+
 ]
