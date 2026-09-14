@@ -5,6 +5,13 @@ import {
   createProduct,
   updateProduct,
   listAdminCategories,
+  listAdminProducts,
+  listVariants,
+  createVariant,
+  deleteVariant,
+  listRelated,
+  createRelated,
+  deleteRelated,
   uploadProductMedia,
   deleteProductImage,
   deleteProductVideo,
@@ -18,6 +25,11 @@ export default function ProductForm() {
   const navigate = useNavigate();
 
   const [categories, setCategories] = useState([]);
+  const [variants, setVariants] = useState([]);
+  const [newVariant, setNewVariant] = useState({ sku: "", attributes: "", stock_qty: 0 });
+  const [related, setRelated] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [relatedPick, setRelatedPick] = useState("");
   const [existingImages, setExistingImages] = useState([]);
   const [existingVideos, setExistingVideos] = useState([]);
   const [newImages, setNewImages] = useState([]);
