@@ -20,3 +20,10 @@ export const deleteProductImage = (productId, imageId) =>
 export const deleteProductVideo = (productId, videoId) =>
   axiosClient.delete(`/admin/products/${productId}/media/`, { data: { video_id: videoId } });
 
+export const listVariants = (productId) => axiosClient.get(`/admin/products/${productId}/variants/`);
+export const createVariant = (productId, data) => axiosClient.post(`/admin/products/${productId}/variants/`, data);
+export const deleteVariant = (id) => axiosClient.delete(`/admin/variants/${id}/`);
+
+export const listRelated = (productId) => axiosClient.get(`/admin/products/${productId}/related/`);
+export const createRelated = (productId, relatedProductId) => axiosClient.post(`/admin/products/${productId}/related/`, { related_product: relatedProductId });
+export const deleteRelated = (id) => axiosClient.delete(`/admin/related/${id}/`);
