@@ -1,226 +1,284 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import {
-  getAdminProduct,
-  createProduct,
-  updateProduct,
-  listAdminCategories,
-  listAdminProducts,
-  listVariants,
-  createVariant,
-  deleteVariant,
-  listRelated,
-  createRelated,
-  deleteRelated,
-  uploadProductMedia,
-  deleteProductImage,
-  deleteProductVideo,
-} from "../../api/adminProducts";
-
-const GST_RATES = [3, 5, 12, 18];
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import VariantEditor from './VariantEditor';
 
 export default function ProductForm() {
-  const { id } = useParams();
-  const isEdit = !!id;
-  const navigate = useNavigate();
-
-  const [categories, setCategories] = useState([]);
-  const [variants, setVariants] = useState([]);
-  const [newVariant, setNewVariant] = useState({ sku: "", attributes: "", stock_qty: 0 });
-  const [related, setRelated] = useState([]);
-  const [allProducts, setAllProducts] = useState([]);
-  const [relatedPick, setRelatedPick] = useState("");
-  const [existingImages, setExistingImages] = useState([]);
-  const [existingVideos, setExistingVideos] = useState([]);
-  const [newImages, setNewImages] = useState([]);
-  const [newVideos, setNewVideos] = useState([]);
-  const [uploading, setUploading] = useState(false);
-  const [form, setForm] = useState({
-    name: "", slug: "", category: "", description: "", price: "",
-    hsn_code: "", gst_rate: 3, stock_qty: 0, is_active: true, is_bestseller: false,
+  const [activeTab, setActiveTab] = useState('general');
+  const [formData, setFormData] = useState({
+    name: 'Aurelia 22K Handcrafted Temple Choker',
+    slug: 'aurelia-22k-handcrafted-temple-choker',
+    category: 'necklaces',
+    description: 'Masterfully forged in pure 22-karat yellow gold, featuring authentic Kundan stone settings and heritage meenakari detailing on the inner bezel.',
+    basePrice: 276699,
+    gstRate: 3,
+    hsnCode: '71131910',
+    stockQty: 4,
+    sku: 'VEL-NCK-042',
+    is_active: true,
+    is_bestseller: true,
   });
-  const [error, setError] = useState("");
-  const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    listAdminCategories().then((res) => setCategories(res.data)).catch(console.error);
-    if (isEdit) {
-      listVariants(id).then((res) => setVariants(res.data));
-      listRelated(id).then((res) => setRelated(res.data));
-      listAdminProducts().then((res) => setAllProducts(res.data));
-      getAdminProduct(id).then((res) => {
-        const p = res.data;
-        setExistingImages(p.images || []);
-        setExistingVideos(p.videos || []);
-        setForm({
-          name: p.name, slug: p.slug, category: p.category?.id || "", description: p.description || "",
-          price: p.price, hsn_code: p.hsn_code, gst_rate: p.gst_rate, stock_qty: p.stock_qty,
-          is_active: p.is_active, is_bestseller: p.is_bestseller,
-        });
-      }).catch(console.error);
-    }
-  }, [id]);
-
-  const update = (field, value) => setForm({ ...form, [field]: value });
-
-  const autoSlug = (name) => name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-    setSaving(true);
-    try {
-      const payload = { ...form, category: Number(form.category), price: String(form.price), gst_rate: String(form.gst_rate) };
-      let savedId = id;
-      if (isEdit) await updateProduct(id, payload);
-      else savedId = (await createProduct(payload)).data.id;
-      if (newImages.length || newVideos.length) {
-        await uploadProductMedia(savedId, newImages, newVideos);
-      }
-      navigate("/admin/products");
-    } catch (err) {
-      console.error("Save error:", err.response?.data || err.message);
-      setError(JSON.stringify(err.response?.data || err.message));
-    } finally {
-      setSaving(false);
-    }
-  };
+  // Calculate inclusive GST live for accurate billing preview
+  const gstMultiplier = 1 + formData.gstRate / 100;
+  const priceWithGst = Math.round(formData.basePrice * gstMultiplier);
 
   return (
-    <div>
-      <h2 className="admin-page-title">{isEdit ? "Edit Product" : "Add Product"}</h2>
-      <form className="admin-panel admin-form" onSubmit={handleSubmit}>
-        <div className="admin-form-row">
-          <label>Name</label>
-          <input value={form.name} onChange={(e) => {
-            const val = e.target.value;
-            setForm((prev) => ({ ...prev, name: val, slug: !isEdit ? autoSlug(val) : prev.slug }));
-          }} required />
-        </div>
-        <div className="admin-form-row">
-          <label>Slug</label>
-          <input value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
-        </div>
-        <div className="admin-form-row">
-          <label>Category</label>
-          <select value={form.category} onChange={(e) => update("category", e.target.value)} required>
-            <option value="">Select category</option>
-            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-        </div>
-        <div className="admin-form-row">
-          <label>Description</label>
-          <textarea rows={3} value={form.description} onChange={(e) => update("description", e.target.value)} />
-        </div>
-        <div className="admin-form-grid">
-          <div className="admin-form-row">
-            <label>Price (₹)</label>
-            <input type="number" value={form.price} onChange={(e) => update("price", e.target.value)} required />
+    <div className="min-h-screen bg-[#FDFBF7] p-6 lg:p-10 font-sans text-[#2B2B2B]">
+      {/* Top Breadcrumb & Actions */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8 pb-6 border-b border-[#E5E0D8]">
+        <div>
+          <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-[#8C827A] mb-1">
+            <Link to="/admin/products" className="hover:text-[#B08D3E]">Catalog</Link>
+            <span>/</span>
+            <span>Product Editor</span>
           </div>
-          <div className="admin-form-row">
-            <label>HSN Code</label>
-            <input value={form.hsn_code} onChange={(e) => update("hsn_code", e.target.value)} required />
-          </div>
-          <div className="admin-form-row">
-            <label>GST Rate</label>
-            <select value={form.gst_rate} onChange={(e) => update("gst_rate", e.target.value)}>
-              {GST_RATES.map((r) => <option key={r} value={r}>{r}%</option>)}
-            </select>
-          </div>
-          <div className="admin-form-row">
-            <label>Stock Qty</label>
-            <input type="number" value={form.stock_qty} onChange={(e) => update("stock_qty", e.target.value)} required />
-          </div>
+          <h1 className="text-2xl lg:text-3xl font-serif text-[#1F1D1B]">{formData.name || 'New Product Piece'}</h1>
         </div>
-        <div className="admin-checkbox-row">
-          <label><input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} /> Active</label>
-          <label><input type="checkbox" checked={form.is_bestseller} onChange={(e) => update("is_bestseller", e.target.checked)} /> Bestseller</label>
+
+        <div className="flex items-center gap-3">
+          <Link
+            to="/admin/products"
+            className="px-5 py-2.5 rounded-lg border border-[#D5CFC4] text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] hover:bg-[#F4EFE6] transition-all"
+          >
+            Discard
+          </Link>
+          <button
+            type="button"
+            className="px-6 py-2.5 rounded-lg bg-gradient-to-r from-[#B08D3E] to-[#D4AF37] text-white text-xs font-semibold uppercase tracking-wider shadow-sm hover:shadow-md hover:brightness-105 transition-all"
+          >
+            Publish Changes
+          </button>
         </div>
-        {isEdit && (
-          <div className="admin-form-row">
-            <label>Existing Images</label>
-            <div className="admin-media-grid">
-              {existingImages.map((img) => (
-                <div key={img.id} className="admin-media-thumb">
-                  <img src={img.image} alt="" />
-                  <button type="button" onClick={async () => { await deleteProductImage(id, img.id); setExistingImages(existingImages.filter((i) => i.id !== img.id)); }}>×</button>
+      </div>
+
+      {/* Tabs Header */}
+      <div className="flex border-b border-[#E5E0D8] mb-8 gap-8">
+        {[
+          { id: 'general', label: '1. General & Pricing' },
+          { id: 'variants', label: '2. Variants & Customization' },
+          { id: 'media', label: '3. Imagery & Video' },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`pb-3 text-xs uppercase tracking-widest font-semibold transition-all relative ${
+              activeTab === tab.id ? 'text-[#B08D3E]' : 'text-[#8C827A] hover:text-[#1F1D1B]'
+            }`}
+          >
+            {tab.label}
+            {activeTab === tab.id && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#B08D3E] to-[#D4AF37]"></span>
+            )}
+          </button>
+        ))}
+      </div>
+
+      {/* Tab 1: General & Tax */}
+      {activeTab === 'general' && (
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Info */}
+          <div className="lg:col-span-2 space-y-6">
+            <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+              <h3 className="font-serif text-lg text-[#1F1D1B] mb-4">Core Specifications</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                    Piece Title *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm focus:outline-none focus:border-[#B08D3E] focus:ring-1 focus:ring-[#B08D3E]"
+                  />
                 </div>
-              ))}
-            </div>
 
-            <label>Existing Videos</label>
-            <div className="admin-media-grid">
-              {existingVideos.map((v) => (
-                <div key={v.id} className="admin-media-thumb">
-                  <video src={v.video} muted />
-                  <button type="button" onClick={async () => { await deleteProductVideo(id, v.id); setExistingVideos(existingVideos.filter((x) => x.id !== v.id)); }}>×</button>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                      Collection Category *
+                    </label>
+                    <select
+                      value={formData.category}
+                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm focus:outline-none focus:border-[#B08D3E]"
+                    >
+                      <option value="necklaces">Necklaces</option>
+                      <option value="rings">Rings</option>
+                      <option value="earrings">Earrings</option>
+                      <option value="bracelets">Bracelets</option>
+                      <option value="solitaires">Solitaires</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                      Product URL Slug
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.slug}
+                      onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                      className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-xs font-mono text-[#6B6B6B]"
+                    />
+                  </div>
                 </div>
-              ))}
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                    Artisanal Description
+                  </label>
+                  <textarea
+                    rows={4}
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                    className="w-full p-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm focus:outline-none focus:border-[#B08D3E] focus:ring-1 focus:ring-[#B08D3E]"
+                  />
+                </div>
+              </div>
             </div>
 
-            <label>Add New Images</label>
-            <input type="file" accept="image/*" multiple onChange={(e) => setNewImages([...e.target.files])} />
-            <label>Add New Videos</label>
-            <input type="file" accept="video/*" multiple onChange={(e) => setNewVideos([...e.target.files])} />
-            <button
-              type="button"
-              className="admin-btn-primary"
-              disabled={uploading}
-              onClick={async () => {
-                setUploading(true);
-                try {
-                  await uploadProductMedia(id, newImages, newVideos);
-                  location.reload();
-                } finally {
-                  setUploading(false);
-                }
-              }}
-            >
-              {uploading ? "Uploading…" : "Upload Media"}
-            </button>
-
-            <label style={{ marginTop: 20, display: "block" }}>Variants</label>
-            {variants.map((v) => (
-              <div key={v.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-                <span>{v.sku} — {JSON.stringify(v.attributes)} (stock: {v.stock_qty})</span>
-                <button type="button" onClick={async () => { await deleteVariant(v.id); setVariants(variants.filter((x) => x.id !== v.id)); }}>🗑️</button>
+            {/* Pricing & GST Requirements */}
+            <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-serif text-lg text-[#1F1D1B]">Valuation & GST Compliance</h3>
+                <span className="text-xs bg-[#F4EFE6] text-[#B08D3E] font-medium px-2.5 py-1 rounded">Indian Tax Ready</span>
               </div>
-            ))}
-            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-              <input placeholder="SKU" value={newVariant.sku} onChange={(e) => setNewVariant({ ...newVariant, sku: e.target.value })} />
-              <input placeholder='{"metal":"Gold"}' value={newVariant.attributes} onChange={(e) => setNewVariant({ ...newVariant, attributes: e.target.value })} />
-              <input type="number" placeholder="Stock" value={newVariant.stock_qty} onChange={(e) => setNewVariant({ ...newVariant, stock_qty: e.target.value })} />
-              <button type="button" className="admin-btn-primary" onClick={async () => {
-                const attrs = JSON.parse(newVariant.attributes || "{}");
-                const res = await createVariant(id, { sku: newVariant.sku, attributes: attrs, stock_qty: newVariant.stock_qty });
-                setVariants([...variants, res.data]);
-                setNewVariant({ sku: "", attributes: "", stock_qty: 0 });
-              }}>+ Add Variant</button>
-            </div>
 
-            <label style={{ display: "block" }}>Related Products</label>
-            {related.map((r) => (
-              <div key={r.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-                <span>{r.related_product_name}</span>
-                <button type="button" onClick={async () => { await deleteRelated(r.id); setRelated(related.filter((x) => x.id !== r.id)); }}>🗑️</button>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                    Base Net Price (₹) *
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.basePrice}
+                    onChange={(e) => setFormData({ ...formData, basePrice: Number(e.target.value) })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] font-semibold text-sm focus:outline-none focus:border-[#B08D3E]"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                    GST Rate Slab *
+                  </label>
+                  <select
+                    value={formData.gstRate}
+                    onChange={(e) => setFormData({ ...formData, gstRate: Number(e.target.value) })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm focus:outline-none focus:border-[#B08D3E]"
+                  >
+                    <option value={3}>3% (Gold & Gems)</option>
+                    <option value={5}>5% (Silver & Fashion)</option>
+                    <option value={12}>12% (Accessories)</option>
+                    <option value={18}>18% (Standard Service)</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">
+                    HSN / SAC Code *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.hsnCode}
+                    onChange={(e) => setFormData({ ...formData, hsnCode: e.target.value })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm font-mono focus:outline-none focus:border-[#B08D3E]"
+                  />
+                </div>
               </div>
-            ))}
-            <div style={{ display: "flex", gap: 8 }}>
-              <select value={relatedPick} onChange={(e) => setRelatedPick(e.target.value)}>
-                <option value="">Select product</option>
-                {allProducts.filter((p) => p.id !== Number(id)).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-              <button type="button" className="admin-btn-primary" onClick={async () => {
-                const res = await createRelated(id, relatedPick);
-                setRelated([...related, res.data]);
-                setRelatedPick("");
-              }}>+ Add Related</button>
+
+              {/* Live Invoice Preview Pill */}
+              <div className="mt-6 p-4 rounded-lg bg-[#FAF7F2] border border-[#EBE5DB] flex items-center justify-between">
+                <div>
+                  <span className="text-xs text-[#8C827A] block">Customer Facing Display Price (Incl. GST)</span>
+                  <span className="text-xl font-serif text-[#1F1D1B] font-bold">₹{priceWithGst.toLocaleString('en-IN')}</span>
+                </div>
+                <div className="text-right text-xs text-[#6B6B6B]">
+                  GST Breakdown: <span className="font-semibold">₹{(priceWithGst - formData.basePrice).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
             </div>
           </div>
-        )}
-        {error && <p className="otp-error">{error}</p>}
-        <button className="admin-btn-primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save Product"}</button>
-      </form>
+
+          {/* Sidebar Properties */}
+          <div className="space-y-6">
+            <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+              <h3 className="font-serif text-lg text-[#1F1D1B] mb-4">Stock & Inventory</h3>
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">Master SKU</label>
+                  <input
+                    type="text"
+                    value={formData.sku}
+                    onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-xs font-mono"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-[#6B6B6B] mb-2">Vault Units Available</label>
+                  <input
+                    type="number"
+                    value={formData.stockQty}
+                    onChange={(e) => setFormData({ ...formData, stockQty: Number(e.target.value) })}
+                    className="w-full h-11 px-4 rounded-lg border border-[#E5E0D8] bg-[#FDFBF7] text-sm font-semibold"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+              <h3 className="font-serif text-lg text-[#1F1D1B] mb-4">Storefront Status</h3>
+
+              <div className="space-y-3">
+                <label className="flex items-center justify-between p-3 rounded-lg border border-[#E5E0D8] cursor-pointer hover:bg-[#FDFBF7]">
+                  <span className="text-xs font-semibold text-[#1F1D1B] uppercase tracking-wider">Public Visibility</span>
+                  <input
+                    type="checkbox"
+                    checked={formData.is_active}
+                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
+                    className="w-4 h-4 accent-[#B08D3E]"
+                  />
+                </label>
+
+                <label className="flex items-center justify-between p-3 rounded-lg border border-[#E5E0D8] cursor-pointer hover:bg-[#FDFBF7]">
+                  <span className="text-xs font-semibold text-[#1F1D1B] uppercase tracking-wider">Bestseller Badge</span>
+                  <input
+                    type="checkbox"
+                    checked={formData.is_bestseller}
+                    onChange={(e) => setFormData({ ...formData, is_bestseller: e.target.checked })}
+                    className="w-4 h-4 accent-[#B08D3E]"
+                  />
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 2: Variants Sub-editor */}
+      {activeTab === 'variants' && (
+        <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+          <VariantEditor basePrice={formData.basePrice} />
+        </div>
+      )}
+
+      {/* Tab 3: Media Gallery */}
+      {activeTab === 'media' && (
+        <div className="bg-white border border-[#ECE7DE] rounded-xl p-6 shadow-sm">
+          <h3 className="font-serif text-lg text-[#1F1D1B] mb-2">High-Resolution Photography</h3>
+          <p className="text-xs text-[#8C827A] mb-6">Drag and reorder product imagery. First item serves as the primary storefront card.</p>
+          
+          <div className="border-2 border-dashed border-[#D5CFC4] rounded-xl p-10 text-center bg-[#FDFBF7] cursor-pointer hover:border-[#B08D3E] transition-colors">
+            <svg className="w-10 h-10 mx-auto text-[#B08D3E] mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <span className="text-xs uppercase tracking-wider text-[#1F1D1B] font-semibold block">Drop master jewelry assets here</span>
+            <span className="text-[11px] text-[#8C827A] mt-1 block">Supports PNG, JPG, WebP up to 15MB</span>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
