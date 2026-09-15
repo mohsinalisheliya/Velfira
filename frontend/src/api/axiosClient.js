@@ -64,4 +64,29 @@ axiosClient.interceptors.response.use(
   }
 );
 
+axiosClient.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      const isAdminRoute = err.config?.url?.includes("/admin");
+      if (isAdminRoute) {
+        localStorage.removeItem("velfira_admin_access");
+        localStorage.removeItem("velfira_admin_refresh");
+        localStorage.removeItem("velfira_admin_username");
+        if (!window.location.pathname.includes("/admin/login")) {
+          window.location.href = "/admin/login";
+        }
+      } else {
+        localStorage.removeItem("velfira_access");
+        localStorage.removeItem("velfira_refresh");
+        localStorage.removeItem("velfira_user");
+        if (!window.location.pathname.includes("/account")) {
+          window.location.href = "/account";
+        }
+      }
+    }
+    return Promise.reject(err);
+  }
+);
+
 export default axiosClient;
