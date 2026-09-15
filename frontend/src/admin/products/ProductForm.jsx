@@ -1,71 +1,226 @@
-import React from 'react';
+import { useEffect, useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import {
+  getAdminProduct,
+  createProduct,
+  updateProduct,
+  listAdminCategories,
+  listAdminProducts,
+  listVariants,
+  createVariant,
+  deleteVariant,
+  listRelated,
+  createRelated,
+  deleteRelated,
+  uploadProductMedia,
+  deleteProductImage,
+  deleteProductVideo,
+} from "../../api/adminProducts";
+
+const GST_RATES = [3, 5, 12, 18];
 
 export default function ProductForm() {
+  const { id } = useParams();
+  const isEdit = !!id;
+  const navigate = useNavigate();
+
+  const [categories, setCategories] = useState([]);
+  const [variants, setVariants] = useState([]);
+  const [newVariant, setNewVariant] = useState({ sku: "", attributes: "", stock_qty: 0 });
+  const [related, setRelated] = useState([]);
+  const [allProducts, setAllProducts] = useState([]);
+  const [relatedPick, setRelatedPick] = useState("");
+  const [existingImages, setExistingImages] = useState([]);
+  const [existingVideos, setExistingVideos] = useState([]);
+  const [newImages, setNewImages] = useState([]);
+  const [newVideos, setNewVideos] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const [form, setForm] = useState({
+    name: "", slug: "", category: "", description: "", price: "",
+    hsn_code: "", gst_rate: 3, stock_qty: 0, is_active: true, is_bestseller: false,
+  });
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    listAdminCategories().then((res) => setCategories(res.data)).catch(console.error);
+    if (isEdit) {
+      listVariants(id).then((res) => setVariants(res.data));
+      listRelated(id).then((res) => setRelated(res.data));
+      listAdminProducts().then((res) => setAllProducts(res.data));
+      getAdminProduct(id).then((res) => {
+        const p = res.data;
+        setExistingImages(p.images || []);
+        setExistingVideos(p.videos || []);
+        setForm({
+          name: p.name, slug: p.slug, category: p.category?.id || "", description: p.description || "",
+          price: p.price, hsn_code: p.hsn_code, gst_rate: p.gst_rate, stock_qty: p.stock_qty,
+          is_active: p.is_active, is_bestseller: p.is_bestseller,
+        });
+      }).catch(console.error);
+    }
+  }, [id]);
+
+  const update = (field, value) => setForm({ ...form, [field]: value });
+
+  const autoSlug = (name) => name.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    setSaving(true);
+    try {
+      const payload = { ...form, category: Number(form.category), price: String(form.price), gst_rate: String(form.gst_rate) };
+      let savedId = id;
+      if (isEdit) await updateProduct(id, payload);
+      else savedId = (await createProduct(payload)).data.id;
+      if (newImages.length || newVideos.length) {
+        await uploadProductMedia(savedId, newImages, newVideos);
+      }
+      navigate("/admin/products");
+    } catch (err) {
+      console.error("Save error:", err.response?.data || err.message);
+      setError(JSON.stringify(err.response?.data || err.message));
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
-    <div className="min-h-screen p-6 bg-velfira-ivory font-sans text-velfira-charcoal-light">
-      <div className="max-w-4xl p-8 mx-auto bg-white border border-gray-100 rounded-lg shadow-sm">
-        <h2 className="mb-6 text-2xl font-serif text-velfira-charcoal-dark">Product Details</h2>
-        
-        <form className="space-y-6">
-          {/* General Info */}
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-            <div>
-              <label className="block mb-2 text-sm font-medium">Product Name</label>
-              <input 
-                type="text" 
-                className="w-full h-11 px-4 border border-gray-200 rounded-md focus:outline-none focus:border-velfira-gold focus:ring-1 focus:ring-velfira-gold" 
-                placeholder="e.g. Diamond Drop Earrings"
-              />
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium">Category</label>
-              <select className="w-full h-11 px-4 border border-gray-200 rounded-md focus:outline-none focus:border-velfira-gold focus:ring-1 focus:ring-velfira-gold">
-                <option>Select Category</option>
-                <option>Earrings</option>
-                <option>Necklaces</option>
-              </select>
-            </div>
+    <div>
+      <h2 className="admin-page-title">{isEdit ? "Edit Product" : "Add Product"}</h2>
+      <form className="admin-panel admin-form" onSubmit={handleSubmit}>
+        <div className="admin-form-row">
+          <label>Name</label>
+          <input value={form.name} onChange={(e) => {
+            const val = e.target.value;
+            setForm((prev) => ({ ...prev, name: val, slug: !isEdit ? autoSlug(val) : prev.slug }));
+          }} required />
+        </div>
+        <div className="admin-form-row">
+          <label>Slug</label>
+          <input value={form.slug} onChange={(e) => update("slug", e.target.value)} required />
+        </div>
+        <div className="admin-form-row">
+          <label>Category</label>
+          <select value={form.category} onChange={(e) => update("category", e.target.value)} required>
+            <option value="">Select category</option>
+            {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+          </select>
+        </div>
+        <div className="admin-form-row">
+          <label>Description</label>
+          <textarea rows={3} value={form.description} onChange={(e) => update("description", e.target.value)} />
+        </div>
+        <div className="admin-form-grid">
+          <div className="admin-form-row">
+            <label>Price (₹)</label>
+            <input type="number" value={form.price} onChange={(e) => update("price", e.target.value)} required />
           </div>
+          <div className="admin-form-row">
+            <label>HSN Code</label>
+            <input value={form.hsn_code} onChange={(e) => update("hsn_code", e.target.value)} required />
+          </div>
+          <div className="admin-form-row">
+            <label>GST Rate</label>
+            <select value={form.gst_rate} onChange={(e) => update("gst_rate", e.target.value)}>
+              {GST_RATES.map((r) => <option key={r} value={r}>{r}%</option>)}
+            </select>
+          </div>
+          <div className="admin-form-row">
+            <label>Stock Qty</label>
+            <input type="number" value={form.stock_qty} onChange={(e) => update("stock_qty", e.target.value)} required />
+          </div>
+        </div>
+        <div className="admin-checkbox-row">
+          <label><input type="checkbox" checked={form.is_active} onChange={(e) => update("is_active", e.target.checked)} /> Active</label>
+          <label><input type="checkbox" checked={form.is_bestseller} onChange={(e) => update("is_bestseller", e.target.checked)} /> Bestseller</label>
+        </div>
+        {isEdit && (
+          <div className="admin-form-row">
+            <label>Existing Images</label>
+            <div className="admin-media-grid">
+              {existingImages.map((img) => (
+                <div key={img.id} className="admin-media-thumb">
+                  <img src={img.image} alt="" />
+                  <button type="button" onClick={async () => { await deleteProductImage(id, img.id); setExistingImages(existingImages.filter((i) => i.id !== img.id)); }}>×</button>
+                </div>
+              ))}
+            </div>
 
-          {/* Tax & Pricing Requirements */}
-          <div className="grid grid-cols-1 gap-6 pt-6 border-t border-gray-100 md:grid-cols-3">
-            <div>
-              <label className="block mb-2 text-sm font-medium">Base Price</label>
-              <input 
-                type="number" 
-                className="w-full h-11 px-4 border border-gray-200 rounded-md focus:outline-none focus:border-velfira-gold focus:ring-1 focus:ring-velfira-gold" 
-                placeholder="0.00"
-              />
+            <label>Existing Videos</label>
+            <div className="admin-media-grid">
+              {existingVideos.map((v) => (
+                <div key={v.id} className="admin-media-thumb">
+                  <video src={v.video} muted />
+                  <button type="button" onClick={async () => { await deleteProductVideo(id, v.id); setExistingVideos(existingVideos.filter((x) => x.id !== v.id)); }}>×</button>
+                </div>
+              ))}
             </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium">GST Slab</label>
-              <select className="w-full h-11 px-4 border border-gray-200 rounded-md focus:outline-none focus:border-velfira-gold focus:ring-1 focus:ring-velfira-gold">
-                <option value="3">3% (Gold/Silver)</option>
-                <option value="5">5%</option>
-                <option value="12">12%</option>
-                <option value="18">18%</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-2 text-sm font-medium">HSN Code</label>
-              <input 
-                type="text" 
-                className="w-full h-11 px-4 border border-gray-200 rounded-md focus:outline-none focus:border-velfira-gold focus:ring-1 focus:ring-velfira-gold" 
-                placeholder="e.g. 7113"
-              />
-            </div>
-          </div>
 
-          <div className="flex justify-end gap-4 pt-8 mt-4 border-t border-gray-50">
-            <button type="button" className="px-6 py-2.5 text-velfira-gold transition-all border border-velfira-gold rounded-md hover:bg-velfira-gold/5">
-              Cancel
+            <label>Add New Images</label>
+            <input type="file" accept="image/*" multiple onChange={(e) => setNewImages([...e.target.files])} />
+            <label>Add New Videos</label>
+            <input type="file" accept="video/*" multiple onChange={(e) => setNewVideos([...e.target.files])} />
+            <button
+              type="button"
+              className="admin-btn-primary"
+              disabled={uploading}
+              onClick={async () => {
+                setUploading(true);
+                try {
+                  await uploadProductMedia(id, newImages, newVideos);
+                  location.reload();
+                } finally {
+                  setUploading(false);
+                }
+              }}
+            >
+              {uploading ? "Uploading…" : "Upload Media"}
             </button>
-            <button type="submit" className="px-6 py-2.5 text-white transition-all rounded-md shadow-sm bg-gradient-to-r from-velfira-gold to-velfira-gold-light hover:shadow-md">
-              Save Product
-            </button>
+
+            <label style={{ marginTop: 20, display: "block" }}>Variants</label>
+            {variants.map((v) => (
+              <div key={v.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+                <span>{v.sku} — {JSON.stringify(v.attributes)} (stock: {v.stock_qty})</span>
+                <button type="button" onClick={async () => { await deleteVariant(v.id); setVariants(variants.filter((x) => x.id !== v.id)); }}>🗑️</button>
+              </div>
+            ))}
+            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
+              <input placeholder="SKU" value={newVariant.sku} onChange={(e) => setNewVariant({ ...newVariant, sku: e.target.value })} />
+              <input placeholder='{"metal":"Gold"}' value={newVariant.attributes} onChange={(e) => setNewVariant({ ...newVariant, attributes: e.target.value })} />
+              <input type="number" placeholder="Stock" value={newVariant.stock_qty} onChange={(e) => setNewVariant({ ...newVariant, stock_qty: e.target.value })} />
+              <button type="button" className="admin-btn-primary" onClick={async () => {
+                const attrs = JSON.parse(newVariant.attributes || "{}");
+                const res = await createVariant(id, { sku: newVariant.sku, attributes: attrs, stock_qty: newVariant.stock_qty });
+                setVariants([...variants, res.data]);
+                setNewVariant({ sku: "", attributes: "", stock_qty: 0 });
+              }}>+ Add Variant</button>
+            </div>
+
+            <label style={{ display: "block" }}>Related Products</label>
+            {related.map((r) => (
+              <div key={r.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
+                <span>{r.related_product_name}</span>
+                <button type="button" onClick={async () => { await deleteRelated(r.id); setRelated(related.filter((x) => x.id !== r.id)); }}>🗑️</button>
+              </div>
+            ))}
+            <div style={{ display: "flex", gap: 8 }}>
+              <select value={relatedPick} onChange={(e) => setRelatedPick(e.target.value)}>
+                <option value="">Select product</option>
+                {allProducts.filter((p) => p.id !== Number(id)).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+              </select>
+              <button type="button" className="admin-btn-primary" onClick={async () => {
+                const res = await createRelated(id, relatedPick);
+                setRelated([...related, res.data]);
+                setRelatedPick("");
+              }}>+ Add Related</button>
+            </div>
           </div>
-        </form>
-      </div>
+        )}
+        {error && <p className="otp-error">{error}</p>}
+        <button className="admin-btn-primary" type="submit" disabled={saving}>{saving ? "Saving…" : "Save Product"}</button>
+      </form>
     </div>
   );
 }
