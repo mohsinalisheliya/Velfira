@@ -45,9 +45,6 @@ export default function ProductForm() {
   useEffect(() => {
     listAdminCategories().then((res) => setCategories(res.data)).catch(console.error);
     if (isEdit) {
-      listVariants(id).then((res) => setVariants(res.data));
-      listRelated(id).then((res) => setRelated(res.data));
-      listAdminProducts().then((res) => setAllProducts(res.data));
       getAdminProduct(id).then((res) => {
         const p = res.data;
         setExistingImages(p.images || []);
@@ -178,44 +175,6 @@ export default function ProductForm() {
             >
               {uploading ? "Uploading…" : "Upload Media"}
             </button>
-
-            <label style={{ marginTop: 20, display: "block" }}>Variants</label>
-            {variants.map((v) => (
-              <div key={v.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-                <span>{v.sku} — {JSON.stringify(v.attributes)} (stock: {v.stock_qty})</span>
-                <button type="button" onClick={async () => { await deleteVariant(v.id); setVariants(variants.filter((x) => x.id !== v.id)); }}>🗑️</button>
-              </div>
-            ))}
-            <div style={{ display: "flex", gap: 8, marginBottom: 20 }}>
-              <input placeholder="SKU" value={newVariant.sku} onChange={(e) => setNewVariant({ ...newVariant, sku: e.target.value })} />
-              <input placeholder='{"metal":"Gold"}' value={newVariant.attributes} onChange={(e) => setNewVariant({ ...newVariant, attributes: e.target.value })} />
-              <input type="number" placeholder="Stock" value={newVariant.stock_qty} onChange={(e) => setNewVariant({ ...newVariant, stock_qty: e.target.value })} />
-              <button type="button" className="admin-btn-primary" onClick={async () => {
-                const attrs = JSON.parse(newVariant.attributes || "{}");
-                const res = await createVariant(id, { sku: newVariant.sku, attributes: attrs, stock_qty: newVariant.stock_qty });
-                setVariants([...variants, res.data]);
-                setNewVariant({ sku: "", attributes: "", stock_qty: 0 });
-              }}>+ Add Variant</button>
-            </div>
-
-            <label style={{ display: "block" }}>Related Products</label>
-            {related.map((r) => (
-              <div key={r.id} style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: 6 }}>
-                <span>{r.related_product_name}</span>
-                <button type="button" onClick={async () => { await deleteRelated(r.id); setRelated(related.filter((x) => x.id !== r.id)); }}>🗑️</button>
-              </div>
-            ))}
-            <div style={{ display: "flex", gap: 8 }}>
-              <select value={relatedPick} onChange={(e) => setRelatedPick(e.target.value)}>
-                <option value="">Select product</option>
-                {allProducts.filter((p) => p.id !== Number(id)).map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-              </select>
-              <button type="button" className="admin-btn-primary" onClick={async () => {
-                const res = await createRelated(id, relatedPick);
-                setRelated([...related, res.data]);
-                setRelatedPick("");
-              }}>+ Add Related</button>
-            </div>
           </div>
         )}
         {error && <p className="otp-error">{error}</p>}
