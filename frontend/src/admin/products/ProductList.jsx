@@ -1,50 +1,44 @@
-import React, { useState, useEffect } from 'react';
-// Assuming you have a Link component from react-router-dom
+import React from 'react';
+import './admin-products.css'; // Import the new stylesheet
 
 export default function ProductList() {
   return (
-    // Ivory White background, sans-serif body text (Inter/Lato)
-    <div className="p-6 bg-[#FDFBF7] min-h-screen font-sans text-[#2B2B2B]">
-      
-      <div className="flex justify-between items-center mb-8">
-        {/* Refined serif heading (Playfair Display/Georgia) */}
-        <h1 className="text-3xl font-serif text-[#1F1D1B]">Product Catalog</h1>
-        
-        {/* Primary Gold Button with hover shimmer and 6px-8px rounding */}
-        <button className="px-6 py-2 bg-gradient-to-r from-[#B08D3E] to-[#D4AF37] text-white rounded-md shadow-sm hover:shadow-md transition-all">
-          + Add New Product
-        </button>
+    <div className="admin-container">
+      <div className="admin-header">
+        <h1 className="admin-title">Product Catalog</h1>
+        <button className="btn-primary">+ Add New Product</button>
       </div>
 
-      {/* Card style: soft shadow, thin border, rounded corners */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <table className="min-w-full text-left border-collapse">
-          <thead className="bg-[#1F1D1B] text-white">
+      <div className="admin-card" style={{ padding: 0, overflow: 'hidden' }}>
+        <table className="product-table">
+          <thead>
             <tr>
-              <th className="py-3 px-6 font-medium text-sm">Product Name</th>
-              <th className="py-3 px-6 font-medium text-sm">Category</th>
-              <th className="py-3 px-6 font-medium text-sm">Price (inc. GST)</th>
-              <th className="py-3 px-6 font-medium text-sm">Stock</th>
-              <th className="py-3 px-6 font-medium text-sm text-right">Actions</th>
+              <th>Product Name</th>
+              <th>Category</th>
+              <th>Price (inc. GST)</th>
+              <th>Stock</th>
+              <th style={{ textAlign: 'right' }}>Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-100">
-            {/* Map your product data here. Example row: */}
-            <tr className="hover:border-[#B08D3E] hover:border hover:shadow-sm transition-all cursor-pointer">
-              <td className="py-4 px-6 flex items-center gap-4">
-                <div className="w-12 h-12 bg-gray-50 rounded-md border border-gray-100 overflow-hidden">
-                  {/* Lazy loaded image */}
-                  <img src="/placeholder.jpg" alt="Product" className="w-full h-full object-cover" />
+          <tbody>
+            <tr>
+              <td style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                <div style={{ width: '48px', height: '48px', backgroundColor: '#f9f9f9', borderRadius: '6px' }}>
+                  <img src="/placeholder.jpg" alt="Product" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '6px' }} />
                 </div>
-                <span className="font-medium text-[#1F1D1B]">24k Gold Chain</span>
+                <strong>24k Gold Chain</strong>
               </td>
-              <td className="py-4 px-6 text-[#6B6B6B]">Necklaces</td>
-              <td className="py-4 px-6 font-medium">₹45,000</td>
-              <td className="py-4 px-6">
-                <span className="px-2 py-1 bg-green-50 text-green-700 rounded-md text-xs">In Stock (12)</span>
+              <td style={{ color: 'var(--warm-grey)' }}>Necklaces</td>
+              <td>₹45,000</td>
+              <td>
+                <span style={{ padding: '4px 8px', backgroundColor: '#e6f4ea', color: '#137333', borderRadius: '4px', fontSize: '12px' }}>
+                  In Stock (12)
+                </span>
               </td>
-              <td className="py-4 px-6 text-right">
-                <button className="text-[#B08D3E] hover:text-[#1F1D1B] text-sm font-medium">Edit</button>
+              <td style={{ textAlign: 'right' }}>
+                <button style={{ color: 'var(--gold-primary)', background: 'none', border: 'none', cursor: 'pointer', fontWeight: '500' }}>
+                  Edit
+                </button>
               </td>
             </tr>
           </tbody>
