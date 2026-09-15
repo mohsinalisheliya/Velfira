@@ -1,6 +1,6 @@
 from rest_framework import generics, filters
 from rest_framework.permissions import AllowAny, IsAdminUser
-from django_filters.rest_framework import DjangoFilterBackend
+
 from .models import Category, Product, ProductImage, ProductVariant, ProductVideo, RelatedProduct
 from .serializers import (
     CategorySerializer,
