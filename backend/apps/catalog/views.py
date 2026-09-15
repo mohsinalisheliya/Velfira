@@ -1,6 +1,5 @@
 from rest_framework import generics, filters
 from rest_framework.permissions import AllowAny, IsAdminUser
-
 from .models import Category, Product, ProductImage, ProductVariant, ProductVideo, RelatedProduct
 from .serializers import (
     CategorySerializer,
