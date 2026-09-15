@@ -1,88 +1,54 @@
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { listAdminProducts, deleteProduct } from "../../api/adminProducts";
-
-const PAGE_SIZE = 10;
+import React, { useState, useEffect } from 'react';
+// Assuming you have a Link component from react-router-dom
 
 export default function ProductList() {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState("");
-  const [page, setPage] = useState(1);
-
-  useEffect(() => {
-    listAdminProducts().then((res) => setProducts(res.data)).catch(console.error).finally(() => setLoading(false));
-  }, []);
-
-  const load = () => {
-    setLoading(true);
-    listAdminProducts().then((res) => setProducts(res.data)).catch(console.error).finally(() => setLoading(false));
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this product?")) return;
-    await deleteProduct(id);
-    load();
-  };
-
-  const filtered = products.filter((p) => p.name.toLowerCase().includes(search.toLowerCase()));
-  const totalPages = Math.ceil(filtered.length / PAGE_SIZE) || 1;
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
   return (
-    <div>
-      <div className="admin-page-header">
-        <h2 className="admin-page-title">Products</h2>
-        <Link to="/admin/products/new" className="admin-btn-primary">+ Add Product</Link>
+    // Ivory White background, sans-serif body text (Inter/Lato)
+    <div className="p-6 bg-[#FDFBF7] min-h-screen font-sans text-[#2B2B2B]">
+      
+      <div className="flex justify-between items-center mb-8">
+        {/* Refined serif heading (Playfair Display/Georgia) */}
+        <h1 className="text-3xl font-serif text-[#1F1D1B]">Product Catalog</h1>
+        
+        {/* Primary Gold Button with hover shimmer and 6px-8px rounding */}
+        <button className="px-6 py-2 bg-gradient-to-r from-[#B08D3E] to-[#D4AF37] text-white rounded-md shadow-sm hover:shadow-md transition-all">
+          + Add New Product
+        </button>
       </div>
 
-      <input
-        className="admin-search-input"
-        placeholder="Search products…"
-        value={search}
-        onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-      />
-
-      <div className="admin-panel">
-        {loading ? <p className="admin-empty-note">Loading…</p> : (
-          <>
-            <table className="admin-table">
-              <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Active</th><th>Bestseller</th><th></th></tr></thead>
-              <tbody>
-                {paginated.map((p) => (
-                  <tr key={p.id}>
-                    <td>
-                      {p.images?.[0] ? (
-                        <img src={p.images[0].image} alt={p.name} className="admin-row-thumb" />
-                      ) : (
-                        <div className="admin-row-thumb admin-row-thumb-empty">—</div>
-                      )}
-                    </td>
-                    <td>{p.name}</td>
-                    <td>{p.category?.name}</td>
-                    <td>₹{p.price}</td>
-                    <td className={p.stock_qty <= 5 ? "admin-stock-low" : ""}>{p.stock_qty}</td>
-                    <td>{p.is_active ? "✅" : "❌"}</td>
-                    <td>{p.is_bestseller ? "⭐" : "—"}</td>
-                    <td className="admin-row-actions">
-                      <Link to={`/admin/products/${p.id}/edit`} className="admin-icon-btn" title="Edit">✏️</Link>
-                      <button className="admin-icon-btn admin-icon-btn-danger" title="Delete" onClick={() => handleDelete(p.id)}>🗑️</button>
-                    </td>
-                  </tr>
-                ))}
-                {paginated.length === 0 && (
-                  <tr><td colSpan={8} className="admin-empty-note">No products found.</td></tr>
-                )}
-              </tbody>
-            </table>
-
-            <div className="admin-pagination">
-              <button disabled={page === 1} onClick={() => setPage(page - 1)}>‹ Prev</button>
-              <span>Page {page} of {totalPages}</span>
-              <button disabled={page === totalPages} onClick={() => setPage(page + 1)}>Next ›</button>
-            </div>
-          </>
-        )}
+      {/* Card style: soft shadow, thin border, rounded corners */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+        <table className="min-w-full text-left border-collapse">
+          <thead className="bg-[#1F1D1B] text-white">
+            <tr>
+              <th className="py-3 px-6 font-medium text-sm">Product Name</th>
+              <th className="py-3 px-6 font-medium text-sm">Category</th>
+              <th className="py-3 px-6 font-medium text-sm">Price (inc. GST)</th>
+              <th className="py-3 px-6 font-medium text-sm">Stock</th>
+              <th className="py-3 px-6 font-medium text-sm text-right">Actions</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {/* Map your product data here. Example row: */}
+            <tr className="hover:border-[#B08D3E] hover:border hover:shadow-sm transition-all cursor-pointer">
+              <td className="py-4 px-6 flex items-center gap-4">
+                <div className="w-12 h-12 bg-gray-50 rounded-md border border-gray-100 overflow-hidden">
+                  {/* Lazy loaded image */}
+                  <img src="/placeholder.jpg" alt="Product" className="w-full h-full object-cover" />
+                </div>
+                <span className="font-medium text-[#1F1D1B]">24k Gold Chain</span>
+              </td>
+              <td className="py-4 px-6 text-[#6B6B6B]">Necklaces</td>
+              <td className="py-4 px-6 font-medium">₹45,000</td>
+              <td className="py-4 px-6">
+                <span className="px-2 py-1 bg-green-50 text-green-700 rounded-md text-xs">In Stock (12)</span>
+              </td>
+              <td className="py-4 px-6 text-right">
+                <button className="text-[#B08D3E] hover:text-[#1F1D1B] text-sm font-medium">Edit</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );
