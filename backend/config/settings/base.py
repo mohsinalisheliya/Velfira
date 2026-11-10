@@ -9,7 +9,7 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ["velfira.com", "www.velfira.com", "localhost", ".trycloudflare.com"]
+ALLOWED_HOSTS = ["velfira.com", "www.velfira.com", "localhost", "127.0.0.1", ".trycloudflare.com"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
