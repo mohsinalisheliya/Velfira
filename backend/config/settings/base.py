@@ -9,7 +9,7 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = ["velfira.com", "www.velfira.com", "localhost", "127.0.0.1", ".trycloudflare.com"]
+ALLOWED_HOSTS = ["velfira.com", "www.velfira.com", "api.velfira.com", "localhost", "127.0.0.1", ".trycloudflare.com"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -115,7 +115,12 @@ SIMPLE_JWT = {
 }
 
 CORS_ALLOWED_ORIGINS = os.getenv(
-    "CORS_ALLOWED_ORIGINS", "http://localhost:5173"
+    "CORS_ALLOWED_ORIGINS",
+    "http://localhost:5173,https://velfira.com,https://www.velfira.com",
+).split(",")
+CSRF_TRUSTED_ORIGINS = os.getenv(
+    "CSRF_TRUSTED_ORIGINS",
+    "https://velfira.com,https://www.velfira.com,https://api.velfira.com",
 ).split(",")
 
 OTP_EXPIRY_MINUTES = 10
