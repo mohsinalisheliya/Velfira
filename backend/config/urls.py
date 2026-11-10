@@ -2,8 +2,12 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.logs.views import SystemLogListView
+from .views import health_check
 
 urlpatterns = [
+    path("", health_check, name="health-check"),
+    path("system-logs/", SystemLogListView.as_view(), name="system-logs"),
     path("admin/", admin.site.urls),
     path("api/auth/", include("apps.accounts.urls")),
     path("api/", include("apps.catalog.urls")),

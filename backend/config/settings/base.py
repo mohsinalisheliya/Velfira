@@ -9,7 +9,8 @@ load_dotenv(BASE_DIR / ".env")
 
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key-change-me")
 DEBUG = os.getenv("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.getenv("CORS_ALLOWED_ORIGINS", "localhost,127.0.0.1").split(",")
+ALLOWED_HOSTS = ["velfira.com", "www.velfira.com", "localhost"]
+CSRF_TRUSTED_ORIGINS = ["https://velfira.com", "https://www.velfira.com"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
